@@ -84,8 +84,8 @@ class SqlAlchemyRepository(AbstractRepository):
         res = await self.session.execute(query)
         return res.scalars().all()
 
-    async def update_one_by_id(self, obj_id: int | str , **fields) -> M | None:
-        query = update(self.model).where(self.model.id == obj_id).values(**fields).returning(self.model)
+    async def update_one_by_id(self, obj_id: int | str , **kwargs: Any) -> M | None:
+        query = update(self.model).filter(self.model.id == obj_id).values(**kwargs).returning(self.model)
         obj = await self.session.execute(query)
         return obj.scalar_one_or_none()
 

@@ -8,8 +8,7 @@ from src.schemas.user import (
     UserRequest,
     CreateUserResponse,
     UserResponse,
-    UsersListResponse,
-    UserDB,
+    UsersListResponse, UserDB,
 )
 
 

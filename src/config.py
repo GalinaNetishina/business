@@ -1,8 +1,15 @@
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
+
+class AuthJWT(BaseModel):
+    private_key_path: Path = BASE_DIR.parent / 'cert' / 'jwt-private.pem'
+    public_key_path: Path = BASE_DIR.parent / 'cert' / 'jwt-public.pem'
+    algorithm: str = "RS256"
+    access_token_expire_minutes: int = 15
 
 class Settings(BaseSettings):
     DB_NAME: str
@@ -11,6 +18,8 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     MODE: str
+
+    auth_jwt: AuthJWT = AuthJWT()
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(Path.cwd(), ".env")

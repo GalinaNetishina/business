@@ -13,7 +13,7 @@ class UserService(BaseService):
     @transaction_mode
     async def create_user(self, user: UserRequest) -> UserModel:
         """Create user."""
-        return await self.uow.user.add_one_and_get_obj(**user.model_dump())
+        return await self.uow.user.add_one_and_get_obj(**user.model_dump(exclude_none=True))
 
     @transaction_mode
     async def get_user_by_id(self, user_id: int) -> UserModel:
