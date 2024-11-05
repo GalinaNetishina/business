@@ -1,27 +1,24 @@
-from pydantic import  BaseModel, Field, EmailStr
-
+from pydantic import  BaseModel, Field, EmailStr, field_validator, model_validator
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
 
 
-class UserRequest(BaseModel):
-    first_name: str = Field(max_length=50)
-    last_name: str = Field(max_length=50)
+class BaseUser(BaseModel):
+    first_name: str = Field(min_length=3, max_length=50)
+    last_name: str = Field(min_length=3, max_length=50)
+
+class UserRequest(BaseUser):
     email: str | None = None
+    password: str | bytes
     company_id: int | None = None
     is_active: bool = True
 
+class UserSchema(BaseUser):
+    password: str | bytes
+    email: EmailStr | None = None
+    active: bool = True
 
-class UserLoginRequest(UserRequest):
-    # first_name: str = Field(max_length=50)
-    # last_name: str = Field(max_length=50)
-    # email: str | None = Field(EmailStr, max_length=70)
-    # is_active: bool = True
-    password: bytes
-
-class UserUpdateRequest(BaseModel):
-    first_name: str | None = None
-    last_name: str | None = None
+class UserUpdateRequest(BaseUser):
     email: str | None = None
     company_id: int | None = None
 

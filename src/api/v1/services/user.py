@@ -3,9 +3,9 @@ from starlette.status import HTTP_404_NOT_FOUND
 
 from src.models.user import UserModel
 from src.schemas.user import UserRequest
+from src.utils.auth import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
-
 
 class UserService(BaseService):
     base_repository: str = 'user'
@@ -13,7 +13,9 @@ class UserService(BaseService):
     @transaction_mode
     async def create_user(self, user: UserRequest) -> UserModel:
         """Create user."""
-        return await self.uow.user.add_one_and_get_obj(**user.model_dump(exclude_none=True))
+        db_user = user.model_copy()
+        db_user.password = hash_password(user.password)
+        return await self.uow.user.add_one_and_get_obj(**db_user.model_dump(exclude_none=True))
 
     @transaction_mode
     async def get_user_by_id(self, user_id: int) -> UserModel:
@@ -21,6 +23,19 @@ class UserService(BaseService):
         user: UserModel | None = await self.uow.user.get_by_query_one_or_none(id=user_id)
         self._check_user_exists(user)
         return user
+
+    @transaction_mode
+    async def get_user_by_phone(self, phone_number: str) -> UserModel:
+        """Get user by phone."""
+        user: UserModel | None = await self.uow.user.get_by_query_one_or_none(phone_number=phone_number)
+        return user
+
+    @transaction_mode
+    async def get_user_by_email(self, email: str) -> UserModel:
+        """Get user by email."""
+        user: UserModel | None = await self.uow.user.get_by_query_one_or_none(email=email)
+        return user
+
 
     @transaction_mode
     async def update_user(self, user_id: int, user: UserRequest) -> UserModel:
