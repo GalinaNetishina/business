@@ -8,7 +8,7 @@ from src.schemas.user import (
     UserRequest,
     CreateUserResponse,
     UserResponse,
-    UsersListResponse, UserDB,
+    UserDB,
 )
 
 
@@ -25,7 +25,7 @@ async def create_user(
 ) -> CreateUserResponse:
     """Create user."""
     created_user= await service.create_user(user)
-    return CreateUserResponse(payload=UserDB.model_validate(created_user, from_attributes=True))
+    return CreateUserResponse(payload=UserDB.model_validate(created_user))
 
 
 @router.get(
@@ -38,7 +38,7 @@ async def get_user(
 ) -> UserResponse:
     """Get user by ID."""
     user = await service.get_user_by_id(user_id)
-    return UserResponse(payload=UserDB.model_validate(user, from_attributes=True))
+    return UserResponse(payload=UserDB.model_validate(user))
 
 
 @router.put(
@@ -52,7 +52,7 @@ async def update_user(
 ) -> UserResponse:
     """Update user."""
     updated_user = await service.update_user(user_id, user)
-    return UserResponse(payload=UserDB.model_validate(updated_user, from_attributes=True))
+    return UserResponse(payload=UserDB.model_validate(updated_user))
 
 
 @router.delete(

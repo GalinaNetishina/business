@@ -1,30 +1,30 @@
-from jwt.exceptions import InvalidTokenError
 from fastapi import (
     APIRouter,
     Depends,
-    Form,
-    HTTPException,
     status,
 )
 from fastapi.security import (
     HTTPBearer,
     HTTPAuthorizationCredentials,
 )
-from pydantic import BaseModel
 
 from src.api.v1.services.user import UserService
 from src.utils import auth as auth_utils
 
-from src.schemas.user import UserRequest, UserSchema, CreateUserResponse, UserDB
-from src.utils.auth_validation import validate_auth_user, get_current_token_payload, get_current_active_auth_user
+from src.schemas.user import (
+    UserRequest,
+    UserSchema,
+    UserLoginResponse,
+    CreateUserResponse,
+    UserDB, TokenInfo, UserResponse)
+
+from src.utils.auth_validation import (
+    validate_auth_user,
+    get_current_token_payload,
+    get_current_user_from_token,
+)
 
 http_bearer = HTTPBearer()
-
-
-class TokenInfo(BaseModel):
-    access_token: str
-    token_type: str
-
 
 router = APIRouter(
     prefix="/jwt",
@@ -32,42 +32,37 @@ router = APIRouter(
 )
 
 
-@router.post("/register/")
+@router.post("/register/",
+             status_code=status.HTTP_201_CREATED
+             )
 async def register_user(
         user_data: UserRequest,
         service: UserService = Depends(UserService)
 ):
-    user = await service.get_user_by_email(user_data.email)
-    if user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail='user exists')
-
     created_user = await service.create_user(user_data)
     return CreateUserResponse(payload=UserDB.model_validate(created_user, from_attributes=True))
 
 
 
-@router.post("/login/", response_model=TokenInfo)
+@router.post("/login/",
+             response_model=UserLoginResponse,
+             status_code=status.HTTP_200_OK)
 def auth_user_issue_jwt(
     user: UserSchema= Depends(validate_auth_user)
 ):
+    user = UserSchema.model_validate(user, from_attributes=True)
     token = auth_utils.create_access_token(user)
-    # refresh_token = auth_utils.create_refresh_token(user)
-    return TokenInfo(
+    payload = TokenInfo(
         access_token=token,
         token_type="Bearer",
     )
+    return UserLoginResponse(payload=payload)
 
 
-@router.get("/users/me/")
+@router.get("/users/me/",
+            status_code=status.HTTP_200_OK)
 async def auth_user_check_self_info(
-    payload: dict = Depends(get_current_token_payload),
-    user: UserSchema= Depends(get_current_active_auth_user)
+        token=Depends(http_bearer)
 ):
-
-    iat = payload.get("iat")
-
-    return {
-        **user,
-        "logged_in_at": iat,
-    }
+    user = await get_current_user_from_token(token)
+    return UserResponse(payload=UserDB.model_validate(user, from_attributes=True))

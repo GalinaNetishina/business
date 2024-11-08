@@ -1,11 +1,23 @@
-from pydantic import  BaseModel, Field, EmailStr, field_validator, model_validator
+
+from pydantic import BaseModel, Field, EmailStr, field_validator, model_validator, ConfigDict, UUID4
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
 
+class TokenInfo(BaseModel):
+    access_token: str
+    token_type: str
 
 class BaseUser(BaseModel):
     first_name: str = Field(min_length=3, max_length=50)
     last_name: str = Field(min_length=3, max_length=50)
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserLoginResponse(BaseResponse):
+    payload: TokenInfo
+
 
 class UserRequest(BaseUser):
     email: str | None = None
@@ -22,8 +34,12 @@ class UserUpdateRequest(BaseUser):
     email: str | None = None
     company_id: int | None = None
 
-class UserDB(UserRequest):
-    id: int
+class UserDB(BaseUser):
+    id: UUID4
+    model_config = ConfigDict(
+        extra='ignore',
+        from_attributes=True
+    )
 
 
 class CreateUserResponse(BaseCreateResponse):

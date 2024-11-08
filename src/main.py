@@ -1,3 +1,4 @@
+from alembic.util import status
 from fastapi import FastAPI, Request
 from starlette.exceptions import HTTPException
 from fastapi.responses import JSONResponse
@@ -6,6 +7,7 @@ from fastapi import APIRouter
 from .api.v1.routers.company import router as v1_company_router
 from .api.v1.routers.user import router as v1_user_router
 from src.api.v1.routers.auth import router as auth_router
+from .schemas.response import ErrorResponse, BaseResponse
 
 router = APIRouter()
 router.include_router(v1_user_router, prefix='/v1', tags=['User | v1'])
@@ -19,6 +21,5 @@ app.include_router(router, prefix='/api')
 @app.exception_handler(HTTPException)
 async def exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
-        status_code=exc.status_code,
-        content={"message": exc.detail},
+        content=ErrorResponse(status=exc.status_code, payload=exc.detail).model_dump()
     )

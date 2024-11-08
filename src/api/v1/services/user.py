@@ -1,8 +1,8 @@
 from fastapi import HTTPException
-from starlette.status import HTTP_404_NOT_FOUND
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
 from src.models.user import UserModel
-from src.schemas.user import UserRequest
+from src.schemas.user import UserRequest, UserDB
 from src.utils.auth import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
@@ -13,9 +13,14 @@ class UserService(BaseService):
     @transaction_mode
     async def create_user(self, user: UserRequest) -> UserModel:
         """Create user."""
+        user = await self.get_user_by_email(user.email)
+        if user:
+            raise HTTPException(status_code=HTTP_409_CONFLICT,
+                                detail='user exists')
         db_user = user.model_copy()
         db_user.password = hash_password(user.password)
         return await self.uow.user.add_one_and_get_obj(**db_user.model_dump(exclude_none=True))
+
 
     @transaction_mode
     async def get_user_by_id(self, user_id: int) -> UserModel:

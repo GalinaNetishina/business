@@ -34,7 +34,7 @@ def decode_jwt(
 
 
 def hash_password(
-    password: str,
+    password: str | bytes,
 ) -> bytes:
     salt = bcrypt.gensalt()
     pwd_bytes: bytes = password.encode()
@@ -73,7 +73,6 @@ def create_access_token(user) -> str:
     jwt_payload = {
         # subject
         "sub": user.email,
-        "second_name": user.last_name,
         "email": user.email,
         # "logged_in_at"
     }
@@ -86,8 +85,8 @@ def create_access_token(user) -> str:
 
 def create_refresh_token(user) -> str:
     jwt_payload = {
-        "sub": user,
-        # "username": user.username,
+        "sub": user.email,
+        "email": user.email,
     }
     return create_jwt(
         token_type=REFRESH_TOKEN_TYPE,
