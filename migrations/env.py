@@ -5,8 +5,6 @@ from sqlalchemy import pool
 
 from alembic import context
 from src.models.base import BaseModel
-from src.models.user import UserModel
-from src.models.company import CompanyModel
 from src.config import settings
 
 
@@ -17,7 +15,7 @@ if config.config_file_name is not None:
 
 target_metadata = BaseModel.metadata
 
-config.set_main_option('sqlalchemy.url', settings.psycopg_url)
+config.set_main_option("sqlalchemy.url", settings.psycopg_url)
 
 
 def run_migrations_offline() -> None:
@@ -58,9 +56,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

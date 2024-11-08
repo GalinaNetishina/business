@@ -5,12 +5,13 @@ import bcrypt
 
 from src.config import settings
 
+
 def encode_jwt(
-        payload: dict,
-        private_key: str = settings.auth_jwt.private_key_path.read_text(),
-        algorithm: str = settings.auth_jwt.algorithm,
-        expire_minutes: int = settings.auth_jwt.access_token_expire_minutes,
-        expire_timedelta: dt.timedelta | None = None,
+    payload: dict,
+    private_key: str = settings.auth_jwt.private_key_path.read_text(),
+    algorithm: str = settings.auth_jwt.algorithm,
+    expire_minutes: int = settings.auth_jwt.access_token_expire_minutes,
+    expire_timedelta: dt.timedelta | None = None,
 ) -> str:
     to_encode = payload.copy()
     now = dt.datetime.now(dt.timezone.utc)
@@ -25,10 +26,12 @@ def encode_jwt(
     encoded = jwt.encode(to_encode, private_key, algorithm=algorithm)
     return encoded
 
+
 def decode_jwt(
-        token: str | bytes,
-        public_key: str = settings.auth_jwt.public_key_path.read_text(),
-        algorithm: str = settings.auth_jwt.algorithm):
+    token: str | bytes,
+    public_key: str = settings.auth_jwt.public_key_path.read_text(),
+    algorithm: str = settings.auth_jwt.algorithm,
+):
     decoded = jwt.decode(token, public_key, algorithms=[algorithm])
     return decoded
 
@@ -50,9 +53,11 @@ def verify_password(
         hashed_password=hashed_password,
     )
 
+
 TOKEN_TYPE_FIELD = "type"
 ACCESS_TOKEN_TYPE = "access"
 REFRESH_TOKEN_TYPE = "refresh"
+
 
 def create_jwt(
     token_type: str,
@@ -91,5 +96,7 @@ def create_refresh_token(user) -> str:
     return create_jwt(
         token_type=REFRESH_TOKEN_TYPE,
         token_data=jwt_payload,
-        expire_timedelta=dt.timedelta(days=settings.auth_jwt.access_token_expire_minutes),
+        expire_timedelta=dt.timedelta(
+            days=settings.auth_jwt.access_token_expire_minutes
+        ),
     )

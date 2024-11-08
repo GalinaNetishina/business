@@ -72,8 +72,10 @@ class UnitOfWork(AbstractUnitOfWork):
 
 def transaction_mode(func):
     """Decorate a function with transaction mode."""
+
     @functools.wraps(func)
     async def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
         async with self.uow:
             return await func(self, *args, **kwargs)
+
     return wrapper

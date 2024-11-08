@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from src.schemas.response import BaseCreateResponse, BaseResponse
 from src.schemas.user import UserDB
 
+
 class CompanyRequest(BaseModel):
     inn: int
     company_name: str = Field(max_length=50)

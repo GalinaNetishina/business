@@ -1,16 +1,14 @@
-from fastapi import Depends, HTTPException, Form
+from fastapi import HTTPException, Form
 from fastapi.security import HTTPBearer
 from jwt import InvalidTokenError
 from starlette import status
 
 from src.api.v1.services.user import UserService
 from src.models import UserModel
-from src.utils.auth import (
-    decode_jwt,
-    verify_password
-)
+from src.utils.auth import decode_jwt, verify_password
 
 http_bearer = HTTPBearer()
+
 
 def get_current_token_payload(token) -> dict:
     try:
@@ -26,7 +24,7 @@ def get_current_token_payload(token) -> dict:
 
 
 async def get_user_by_token_sub(
-        payload: dict,
+    payload: dict,
 ) -> UserModel:
     service = UserService()
     email: str | None = payload.get("sub")
@@ -40,8 +38,8 @@ async def get_user_by_token_sub(
 
 
 def get_current_user_from_token(token):
-        payload = get_current_token_payload(token)
-        return get_user_by_token_sub(payload)
+    payload = get_current_token_payload(token)
+    return get_user_by_token_sub(payload)
 
 
 async def validate_auth_user(

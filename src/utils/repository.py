@@ -45,7 +45,7 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
 
-M = TypeVar('M', bound=BaseModel)
+M = TypeVar("M", bound=BaseModel)
 
 
 class SqlAlchemyRepository(AbstractRepository):
@@ -64,7 +64,7 @@ class SqlAlchemyRepository(AbstractRepository):
         query = insert(self.model).values(**kwargs)
         await self.session.execute(query)
 
-    async def add_one_and_get_id(self, **kwargs: Any) -> int | str :
+    async def add_one_and_get_id(self, **kwargs: Any) -> int | str:
         query = insert(self.model).values(**kwargs).returning(self.model.id)
         obj_id = await self.session.execute(query)
         return obj_id.scalar_one()
@@ -84,8 +84,13 @@ class SqlAlchemyRepository(AbstractRepository):
         res = await self.session.execute(query)
         return res.scalars().all()
 
-    async def update_one_by_id(self, obj_id: int | str , **kwargs: Any) -> M | None:
-        query = update(self.model).filter(self.model.id == obj_id).values(**kwargs).returning(self.model)
+    async def update_one_by_id(self, obj_id: int | str, **kwargs: Any) -> M | None:
+        query = (
+            update(self.model)
+            .filter(self.model.id == obj_id)
+            .values(**kwargs)
+            .returning(self.model)
+        )
         obj = await self.session.execute(query)
         return obj.scalar_one_or_none()
 

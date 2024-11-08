@@ -9,7 +9,7 @@ from src.utils.unit_of_work import transaction_mode
 
 
 class CompanyService(BaseService):
-    base_repository: str = 'company'
+    base_repository: str = "company"
 
     @transaction_mode
     async def create_company(self, company: CompanyRequest) -> CompanyModel:
@@ -19,16 +19,23 @@ class CompanyService(BaseService):
     @transaction_mode
     async def get_company_with_users(self, company_id: int) -> CompanyWithUsers:
         """Find company by ID with all users."""
-        company: CompanyModel | None = await self.uow.company.get_company_with_users(company_id)
+        company: CompanyModel | None = await self.uow.company.get_company_with_users(
+            company_id
+        )
         self._check_company_exists(company)
         return CompanyWithUsers(
             id=company.id,
             inn=company.inn,
             company_name=company.company_name,
-            users=[UserDB.model_validate(user, from_attributes=True) for user in company.users],
+            users=[
+                UserDB.model_validate(user, from_attributes=True)
+                for user in company.users
+            ],
         )
 
     @staticmethod
     def _check_company_exists(company: CompanyModel | None) -> None:
         if not company:
-            raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail='Company not found')
+            raise HTTPException(
+                status_code=HTTP_404_NOT_FOUND, detail="Company not found"
+            )
