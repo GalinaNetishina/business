@@ -25,7 +25,7 @@ class UserLoginResponse(BaseResponse):
 class UserRequest(BaseUser):
     email: str | None = None
     password: str | bytes
-    company_id: int | None = None
+    company_id: UUID4 | None = None
     is_active: bool = True
 
 

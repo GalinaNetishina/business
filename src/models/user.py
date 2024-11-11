@@ -1,4 +1,6 @@
-from sqlalchemy import String, Integer, ForeignKey, Boolean, text, LargeBinary
+
+
+from sqlalchemy import String, Integer, ForeignKey, Boolean, text, LargeBinary, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseModel, uuid_pk
@@ -12,13 +14,13 @@ class UserModel(BaseModel):
     last_name: Mapped[str] = mapped_column(String(50))
     password: Mapped[bytes] = mapped_column(LargeBinary)
     email: Mapped[str | None] = mapped_column(String(70), unique=True)
-    company_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("company.id"))
+    company_id = mapped_column(UUID, ForeignKey("company.id"))
 
     is_admin: Mapped[bool | None] = mapped_column(
-        Boolean, default=False, server_default=text("false")
+        Boolean, default=False, server_default=text("false"),
     )
     is_active: Mapped[bool | None] = mapped_column(
         Boolean, default=True, server_default=text("true")
     )
+    # company= relationship('CompanyModel')
 
-    company: Mapped[int] = relationship("CompanyModel", back_populates="users")

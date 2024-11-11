@@ -12,13 +12,13 @@ class UserService(BaseService):
     base_repository: str = "user"
 
     @transaction_mode
-    async def create_user(self, user: UserRequest) -> UserModel:
+    async def create_user(self, user_data: UserRequest) -> UserModel:
         """Create user."""
-        user = await self.get_user_by_email(user.email)
+        user = await self.get_user_by_email(user_data.email)
         if user:
             raise HTTPException(status_code=HTTP_409_CONFLICT, detail="user exists")
-        db_user = user.model_copy()
-        db_user.password = hash_password(user.password)
+        db_user = user_data.model_copy()
+        db_user.password = hash_password(user_data.password)
         return await self.uow.user.add_one_and_get_obj(
             **db_user.model_dump(exclude_none=True)
         )
@@ -46,6 +46,7 @@ class UserService(BaseService):
         user: UserModel | None = await self.uow.user.get_by_query_one_or_none(
             email=email
         )
+        print(user)
         return user
 
     @transaction_mode

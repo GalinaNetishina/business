@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, UUID4
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
 from src.schemas.user import UserDB
@@ -10,7 +10,7 @@ class CompanyRequest(BaseModel):
 
 
 class CompanyDB(CompanyRequest):
-    id: int
+    id: UUID4
 
 
 class CompanyWithUsers(CompanyDB):
@@ -26,4 +26,4 @@ class CompanyResponse(BaseResponse):
 
 
 class CompanyListResponse(BaseResponse):
-    payload: list[CompanyRequest]
+    payload: list[CompanyDB]

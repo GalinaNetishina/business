@@ -18,6 +18,7 @@ class BaseService:
     def __init__(self) -> None:
         self.uow: UnitOfWork = UnitOfWork()
 
+
     @transaction_mode
     async def add_one(self, **kwargs: Any) -> None:
         await self.uow.__dict__[self.base_repository].add_one(**kwargs)
