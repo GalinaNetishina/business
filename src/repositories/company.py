@@ -1,4 +1,3 @@
-from typing import Any
 
 from sqlalchemy import Result, select
 from sqlalchemy.orm import selectinload

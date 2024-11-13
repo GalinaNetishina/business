@@ -1,7 +1,8 @@
-from sqlalchemy import Column, String, Enum, ForeignKey, UUID, text, JSON
+from sqlalchemy import String, Enum, ForeignKey, UUID, text, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
+from . import UserModel
 from .base import BaseModel, uuid_pk, created_at, updated_at
 
 from src.utils.enums import Statuses, Priorities

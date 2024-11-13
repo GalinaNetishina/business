@@ -1,9 +1,8 @@
 """The module contains base routes for working with company."""
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from pydantic import UUID4
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
-from src.api.v1.services.company import CompanyService
 from src.schemas.company import (
     CompanyResponse,
     CompanyWithUsers,

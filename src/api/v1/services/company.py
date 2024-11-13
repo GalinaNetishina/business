@@ -1,10 +1,8 @@
 from fastapi import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND
 
-from src.api.v1.routers.auth import register_user
-from src.models import CompanyModel, PositionModel
-from src.schemas.company import CompanyWithUsers, CompanyRequest, CompanyDB, CompanyShort, CompanyUpdateRequest
-from src.schemas.structure import BasePosition
+from src.models import CompanyModel
+from src.schemas.company import CompanyWithUsers, CompanyRequest, CompanyUpdateRequest
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 

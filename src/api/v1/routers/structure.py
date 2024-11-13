@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi.security import HTTPBearer
 from starlette.status import HTTP_200_OK
 
 
 from src.schemas.structure import PositionResponse
-from src.utils.dependencies import get_service_dep, token_dep
+from src.utils.dependencies import get_service_dep
 
 http_bearer = HTTPBearer()
 # @router.post(

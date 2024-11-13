@@ -1,4 +1,4 @@
-from sqlalchemy import func, Column, Index, UUID, Integer, ForeignKey, JSON
+from sqlalchemy import func, Column, Index, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, relationship, foreign, remote, mapped_column
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel, uuid_pk

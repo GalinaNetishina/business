@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.security import HTTPBearer
 
-from src.api.v1.services import *
+import src.api.v1.services as serv
 from src.utils.auth_validation import get_current_user_from_token
 from src.utils.service import BaseService
 
@@ -26,8 +26,8 @@ async def get_company_from_token(
     return user.company
 
 services = {
-            'company':  CompanyService,
-            'user': UserService,
-            'task': TaskService,
-            'structure': PositionService
+            'company':  serv.CompanyService,
+            'user': serv.UserService,
+            'task': serv.TaskService,
+            'structure': serv.PositionService
         }

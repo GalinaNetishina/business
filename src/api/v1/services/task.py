@@ -1,5 +1,3 @@
-from fastapi import HTTPException
-from starlette.status import HTTP_404_NOT_FOUND
 
 from src.models import TaskModel
 from src.schemas.task import TaskRequest, TaskDB

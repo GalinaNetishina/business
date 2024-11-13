@@ -3,8 +3,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field, UUID4
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
-from src.schemas.user import UserDB
-from src.utils.enums import Priorities, Statuses
 
 
 class TaskRequest(BaseModel):
