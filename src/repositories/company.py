@@ -13,7 +13,7 @@ class CompanyRepository(SqlAlchemyRepository):
         query = (
             select(self.model)
             .where(self.model.id == company_id)
-            # .options(selectinload(self.model.users))
+            .options(selectinload(self.model.users))
         )
         res: Result = await self.session.execute(query)
         return res.scalar_one_or_none()

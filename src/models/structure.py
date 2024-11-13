@@ -1,5 +1,5 @@
-from sqlalchemy import func, ForeignKey, Boolean, text, LargeBinary, nullsfirst, Column, Index, Integer, UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship, foreign, remote
+from sqlalchemy import func, Column, Index
+from sqlalchemy.orm import Mapped, relationship, foreign, remote
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel, uuid_pk
 
@@ -17,9 +17,9 @@ class PositionModel(BaseModel):
     path = Column(LtreeType, nullable=True)
 
     boss = relationship(
-        'PositionModel',
+        "PositionModel",
         primaryjoin=remote(path) == foreign(func.subpath(path, 0, -1)),
-        backref='subordinates',
+        backref="subordinates",
     )
 
     def __init__(self, name, parent=None):
@@ -27,6 +27,4 @@ class PositionModel(BaseModel):
         ltree_id = Ltree(str(self.id))
         self.path = ltree_id if parent is None else parent.path + ltree_id
 
-    __table_args__ = (
-        Index('ix_positions_path', path, postgresql_using='gist'),
-    )
+    __table_args__ = (Index("ix_positions_path", path, postgresql_using="gist"),)

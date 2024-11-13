@@ -11,9 +11,11 @@ from src.schemas.company import (
     CompanyWithUsers,
     CompanyRequest,
     CompanyDB,
-    CreateCompanyResponse, CompanyListResponse,
+    CreateCompanyResponse,
+    CompanyListResponse,
 )
 from src.utils.auth_validation import get_current_user_from_token
+
 http_bearer = HTTPBearer()
 router = APIRouter(prefix="/company")
 
@@ -49,7 +51,7 @@ async def get_company_with_users(
 
 
 @router.get(
-    path='',
+    path="",
     status_code=HTTP_200_OK,
 )
 async def get_companies(
@@ -57,6 +59,3 @@ async def get_companies(
 ) -> CompanyListResponse:
     companies = await service.get_companies()
     return CompanyListResponse(payload=companies)
-
-
-

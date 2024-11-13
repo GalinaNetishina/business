@@ -1,4 +1,4 @@
-
+__all__ = ["BaseModel", "CompanyModel", "UserModel", "PositionModel"]
 
 from src.models.base import BaseModel
 from src.models.company import CompanyModel

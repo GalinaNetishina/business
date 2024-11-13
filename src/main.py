@@ -23,5 +23,5 @@ app.include_router(router, prefix="/api")
 async def exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
         status_code=exc.status_code,
-        content=ErrorResponse(status=exc.status_code, payload=exc.detail).model_dump()
+        content=ErrorResponse(status=exc.status_code, payload=exc.detail).model_dump(),
     )
