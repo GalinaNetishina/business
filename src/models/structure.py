@@ -1,14 +1,7 @@
-from sqlalchemy import func, Column, Index
-from sqlalchemy.orm import Mapped, relationship, foreign, remote
+from sqlalchemy import func, Column, Index, UUID, Integer, ForeignKey, JSON
+from sqlalchemy.orm import Mapped, relationship, foreign, remote, mapped_column
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel, uuid_pk
-
-# class StructureModel(BaseModel):
-#     __tablenamae__ = "structure"
-#     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-#     company_id = mapped_column(UUID, ForeignKey('company.id'))
-#     positions: Mapped['PositionModel'] = mapped_column()
-
 
 class PositionModel(BaseModel):
     __tablename__ = "position"
@@ -28,3 +21,23 @@ class PositionModel(BaseModel):
         self.path = ltree_id if parent is None else parent.path + ltree_id
 
     __table_args__ = (Index("ix_positions_path", path, postgresql_using="gist"),)
+
+
+class StructureModel(BaseModel):
+    __tablename__ = "structure"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    company_id = mapped_column(ForeignKey('company.id'))
+    positions = mapped_column(ForeignKey('position.id'))
+    # company = relationship('CompanyModel', uselist=False, back_populates='structure', lazy='joined')
+    # users = relationship('UserModel', primaryjoin=company_id=='user.company_id')
+    # admin_id: Mapped[UUID | None] = mapped_column(ForeignKey('user.id'))
+    # admin = relationship(
+    #     'UserModel',
+    #     backref='own_company',
+    #     uselist=False,
+    #     foreign_keys=[admin_id]
+    # )
+
+
+
+

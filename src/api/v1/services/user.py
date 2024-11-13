@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
-from src.models.user import UserModel
-from src.schemas.user import UserRequest
+from src.models import UserModel
+from src.schemas.user import UserRequest, UserUpdateRequest
 from src.utils.auth import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
@@ -32,13 +32,13 @@ class UserService(BaseService):
         self._check_user_exists(user)
         return user
 
-    @transaction_mode
-    async def get_user_by_phone(self, phone_number: str) -> UserModel:
-        """Get user by phone."""
-        user: UserModel | None = await self.uow.user.get_by_query_one_or_none(
-            phone_number=phone_number
-        )
-        return user
+    # @transaction_mode
+    # async def get_user_by_phone(self, phone_number: str) -> UserModel:
+    #     """Get user by phone."""
+    #     user: UserModel | None = await self.uow.user.get_by_query_one_or_none(
+    #         phone_number=phone_number
+    #     )
+    #     return user
 
     @transaction_mode
     async def get_user_by_email(self, email: str) -> UserModel:
@@ -50,10 +50,10 @@ class UserService(BaseService):
         return user
 
     @transaction_mode
-    async def update_user(self, user_id: int, user: UserRequest) -> UserModel:
+    async def update_user(self, user_id: int, user: UserUpdateRequest) -> UserModel:
         """Update user by ID."""
         user: UserModel | None = await self.uow.user.update_one_by_id(
-            obj_id=user_id, **user.model_dump(exclude=set(["password"]))
+            obj_id=user_id, **user.model_dump(exclude=set(["password"]), exclude_unset=True)
         )
         self._check_user_exists(user)
         return user

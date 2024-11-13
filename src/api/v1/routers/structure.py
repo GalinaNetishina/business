@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends
 from fastapi.security import HTTPBearer
 from starlette.status import HTTP_200_OK
 
-from src.api.v1.services.company import PositionService
+
 from src.schemas.structure import PositionResponse
+from src.utils.dependencies import get_service_dep, token_dep
 
 http_bearer = HTTPBearer()
 # @router.post(
@@ -29,8 +30,8 @@ async def add_company_positions(
     title: str,
     company_id,
     parent_id=None,
-    # token=Depends(http_bearer),
-    service: PositionService = Depends(PositionService),
+    # token=token_dep,
+    service=get_service_dep('structure'),
 ):
     # user = await get_current_user_from_token(token)
 

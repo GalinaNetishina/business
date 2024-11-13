@@ -21,6 +21,12 @@ class UserLogin(BaseModel):
 class UserLoginResponse(BaseResponse):
     payload: TokenInfo
 
+class UserUpdateRequest(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    email: EmailStr | None = None
+    company_id : UUID4 | None = None
+    is_active: bool = True
 
 class UserRequest(BaseUser):
     email: str | None = None
@@ -33,11 +39,6 @@ class UserSchema(BaseUser):
     password: str | bytes
     email: EmailStr | None = None
     active: bool = True
-
-
-class UserUpdateRequest(BaseUser):
-    email: str | None = None
-    company_id: int | None = None
 
 
 class UserDB(BaseUser):

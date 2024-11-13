@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, UUID4
+from pydantic import BaseModel, Field, UUID4, model_validator, computed_field
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
 from src.schemas.user import UserDB
@@ -8,13 +8,20 @@ class CompanyRequest(BaseModel):
     inn: int
     company_name: str = Field(max_length=50)
 
+class CompanyUpdateRequest(BaseModel):
+    inn : int | None = None
+    company_name: str | None = None
+
 
 class CompanyDB(CompanyRequest):
     id: UUID4
 
 
 class CompanyWithUsers(CompanyDB):
-    users: list[UserDB] = Field(default_factory=list)
+    users: list[UserDB] | None = Field(default_factory=list)
+
+class CompanyShort(CompanyDB):
+    size : int
 
 
 class CreateCompanyResponse(BaseCreateResponse):
@@ -26,4 +33,4 @@ class CompanyResponse(BaseResponse):
 
 
 class CompanyListResponse(BaseResponse):
-    payload: list[CompanyDB]
+    payload: list[CompanyShort]

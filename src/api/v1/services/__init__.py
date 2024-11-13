@@ -1,7 +1,12 @@
-# __all__ = [
-#     'CompanyService',
-#     'UserService',
-# ]
-#
-# from services.company import CompanyService
-# from services.user import UserService
+__all__ = [
+    'CompanyService',
+    'UserService',
+    'PositionService',
+    'TaskService'
+]
+
+from .company import CompanyService
+from .positions import  PositionService
+from .user import UserService
+from .task import TaskService
+

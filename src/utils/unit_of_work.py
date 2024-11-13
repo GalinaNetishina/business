@@ -8,7 +8,13 @@ from typing import Any
 from typing_extensions import Never
 
 from src.database.db import async_session_maker
-from src.repositories import CompanyRepository, UserRepository, StructureRepository
+from src.repositories import (
+    CompanyRepository,
+    UserRepository,
+    StructureRepository,
+    TaskRepository
+)
+
 
 
 class AbstractUnitOfWork(ABC):
@@ -51,6 +57,7 @@ class UnitOfWork(AbstractUnitOfWork):
         self.company = CompanyRepository(self.session)
         self.user = UserRepository(self.session)
         self.structure = StructureRepository(self.session)
+        self.task = TaskRepository(self.session)
 
     async def __aexit__(
         self,
