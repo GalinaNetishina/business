@@ -4,7 +4,8 @@ __all__ = [
     "router1",
     "auth_router",
     "v1_task_router",
-    "v1_user_router"]
+    "v1_user_router",
+]
 
 from .company import router as v1_company_router
 from .user import router as v1_user_router

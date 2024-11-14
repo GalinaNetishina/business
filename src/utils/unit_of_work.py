@@ -12,9 +12,8 @@ from src.repositories import (
     CompanyRepository,
     UserRepository,
     StructureRepository,
-    TaskRepository
+    TaskRepository,
 )
-
 
 
 class AbstractUnitOfWork(ABC):

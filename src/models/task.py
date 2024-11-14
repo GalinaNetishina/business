@@ -22,27 +22,24 @@ class TaskModel(BaseModel):
         default=Statuses.CREATED,
         server_default=text("'CREATED'"),
     )
-    details: Mapped[str| None]
-    tags: Mapped [list[str]] = mapped_column(ARRAY(String))
+    details: Mapped[str | None]
+    tags: Mapped[list[str]] = mapped_column(ARRAY(String))
     start_data: Mapped[created_at]
     update_data: Mapped[updated_at]
     additional: Mapped[dict | None] = mapped_column(JSON)
 
-    observer_id: Mapped[UUID | None] = mapped_column(ForeignKey('user.id'))
-    performer_id: Mapped[UUID | None] = mapped_column(ForeignKey('user.id'))
-    observer: Mapped['UserModel'] = relationship(
-        'UserModel',
-        backref='observed_tasks',
+    observer_id: Mapped[UUID | None] = mapped_column(ForeignKey("user.id"))
+    performer_id: Mapped[UUID | None] = mapped_column(ForeignKey("user.id"))
+    observer: Mapped["UserModel"] = relationship(
+        "UserModel",
+        backref="observed_tasks",
         foreign_keys=[observer_id],
         uselist=False,
-        lazy='joined',
+        lazy="joined",
     )
-    performer: Mapped['UserModel'] = relationship(
-        'UserModel',
-        backref='performed_tasks',
+    performer: Mapped["UserModel"] = relationship(
+        "UserModel",
+        backref="performed_tasks",
         foreign_keys=[performer_id],
         uselist=False,
     )
-
-
-

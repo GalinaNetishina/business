@@ -27,10 +27,7 @@ from src.utils.auth_validation import (
 
 http_bearer = HTTPBearer()
 
-router = APIRouter(
-    prefix="/jwt",
-    tags=["JWT"],
-)
+router = APIRouter()
 
 
 @router.post("/register/", status_code=status.HTTP_201_CREATED)

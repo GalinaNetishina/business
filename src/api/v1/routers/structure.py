@@ -31,7 +31,7 @@ async def add_company_positions(
     company_id,
     parent_id=None,
     # token=token_dep,
-    service=get_service_dep('structure'),
+    service=get_service_dep("structure"),
 ):
     # user = await get_current_user_from_token(token)
 

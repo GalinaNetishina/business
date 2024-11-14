@@ -53,7 +53,8 @@ class UserService(BaseService):
     async def update_user(self, user_id: int, user: UserUpdateRequest) -> UserModel:
         """Update user by ID."""
         user: UserModel | None = await self.uow.user.update_one_by_id(
-            obj_id=user_id, **user.model_dump(exclude=set(["password"]), exclude_unset=True)
+            obj_id=user_id,
+            **user.model_dump(exclude=set(["password"]), exclude_unset=True),
         )
         self._check_user_exists(user)
         return user

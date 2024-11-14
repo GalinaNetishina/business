@@ -21,12 +21,14 @@ class UserLogin(BaseModel):
 class UserLoginResponse(BaseResponse):
     payload: TokenInfo
 
+
 class UserUpdateRequest(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     email: EmailStr | None = None
-    company_id : UUID4 | None = None
+    company_id: UUID4 | None = None
     is_active: bool = True
+
 
 class UserRequest(BaseUser):
     email: str | None = None

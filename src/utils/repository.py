@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
+from sqlalchemy import exists
 from typing import Any, TypeVar
 from typing_extensions import Never
 
@@ -64,6 +65,11 @@ class SqlAlchemyRepository(AbstractRepository):
         query = insert(self.model).values(**kwargs)
         await self.session.execute(query)
 
+    async def check_exists(self, id):
+        query = select(exists(self.model).where(self.model.id == id))
+        res = await self.session.execute(query)
+        return res.scalar()
+
     async def add_one_and_get_id(self, **kwargs: Any) -> int | str:
         query = insert(self.model).values(**kwargs).returning(self.model.id)
         obj_id = await self.session.execute(query)
@@ -81,6 +87,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     async def get_by_query_all(self, **kwargs: Any) -> Sequence[M]:
         query = select(self.model).filter_by(**kwargs)
+        print(query, kwargs)
         res = await self.session.execute(query)
         return res.scalars().all()
 

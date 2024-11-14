@@ -17,7 +17,6 @@ class CompanyService(BaseService):
         return await self.uow.company.add_one_and_get_obj(
             **company.model_dump(),
             # admin_id=admin.id
-
         )
 
     @transaction_mode
@@ -29,35 +28,37 @@ class CompanyService(BaseService):
 
     @transaction_mode
     async def get_company_with_users(self, company_id) -> CompanyWithUsers:
-        """Find company by ID with all users."""
-        company: CompanyModel | None = await self.uow.company.get_company_with_users(company_id)
-        self._check_company_exists(company)
+        await self._check_company_exists(id)
+        company: CompanyModel | None = await self.uow.company.get_company_with_users(
+            company_id
+        )
         return CompanyWithUsers.model_validate(company, from_attributes=True)
 
     @transaction_mode
     async def get_company_positions(self, company_id) -> CompanyWithUsers:
+        await self._check_company_exists(id)
         company: CompanyModel | None = await self.uow.company.get_company_positions(
             company_id
         )
-        self._check_company_exists(company)
         return CompanyWithUsers.model_validate(company, from_attributes=True)
 
     @transaction_mode
     async def update_user(self, id, company: CompanyUpdateRequest) -> CompanyModel:
+        await self._check_company_exists(id)
         company: CompanyModel | None = await self.uow.company.update_one_by_id(
             obj_id=id, **company.model_dump(exclude_unset=True)
         )
-        self._check_company_exists(company)
         return company
 
     @transaction_mode
     async def delete_company(self, id) -> None:
+        # company: CompanyModel | None = await self.uow.company.get_company_with_users(id)
+        await self._check_company_exists(id)
         await self.uow.company.delete_by_query(id=id)
 
-
-    @staticmethod
-    def _check_company_exists(company: CompanyModel | None) -> None:
-        if not company:
+    async def _check_company_exists(self, id) -> None:
+        exist = await self.uow.company.check_exists(id)
+        if not exist:
             raise HTTPException(
                 status_code=HTTP_404_NOT_FOUND, detail="Company not found"
             )

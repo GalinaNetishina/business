@@ -11,23 +11,25 @@ http_bearer = HTTPBearer()
 def get_service_dep(service_name: str):
     return Depends(services.get(service_name, BaseService))
 
+
 token_dep = Depends(http_bearer)
 
-async def get_user_from_token(
-        token=token_dep
-):
+
+async def get_user_from_token(token=token_dep):
     user = await get_current_user_from_token(token)
     return user
 
+
 async def get_company_from_token(
-        token=token_dep,
+    token=token_dep,
 ):
     user = await get_current_user_from_token(token)
     return user.company
 
+
 services = {
-            'company':  serv.CompanyService,
-            'user': serv.UserService,
-            'task': serv.TaskService,
-            'structure': serv.PositionService
-        }
+    "company": serv.CompanyService,
+    "user": serv.UserService,
+    "task": serv.TaskService,
+    "structure": serv.PositionService,
+}

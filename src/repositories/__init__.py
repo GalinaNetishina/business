@@ -1,4 +1,9 @@
-__all__ = ["CompanyRepository", "UserRepository", "StructureRepository", "TaskRepository"]
+__all__ = [
+    "CompanyRepository",
+    "UserRepository",
+    "StructureRepository",
+    "TaskRepository",
+]
 
 from src.repositories.company import CompanyRepository
 from src.repositories.user import UserRepository

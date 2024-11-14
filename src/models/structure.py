@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, relationship, foreign, remote, mapped_column
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel, uuid_pk
 
+
 class PositionModel(BaseModel):
     __tablename__ = "position"
     id: Mapped[uuid_pk]
@@ -26,8 +27,8 @@ class PositionModel(BaseModel):
 class StructureModel(BaseModel):
     __tablename__ = "structure"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    company_id = mapped_column(ForeignKey('company.id'))
-    positions = mapped_column(ForeignKey('position.id'))
+    company_id = mapped_column(ForeignKey("company.id"))
+    positions = mapped_column(ForeignKey("position.id"))
     # company = relationship('CompanyModel', uselist=False, back_populates='structure', lazy='joined')
     # users = relationship('UserModel', primaryjoin=company_id=='user.company_id')
     # admin_id: Mapped[UUID | None] = mapped_column(ForeignKey('user.id'))
@@ -37,7 +38,3 @@ class StructureModel(BaseModel):
     #     uselist=False,
     #     foreign_keys=[admin_id]
     # )
-
-
-
-

@@ -8,8 +8,9 @@ class CompanyRequest(BaseModel):
     inn: int
     company_name: str = Field(max_length=50)
 
+
 class CompanyUpdateRequest(BaseModel):
-    inn : int | None = None
+    inn: int | None = None
     company_name: str | None = None
 
 
@@ -20,8 +21,9 @@ class CompanyDB(CompanyRequest):
 class CompanyWithUsers(CompanyDB):
     users: list[UserDB] | None = Field(default_factory=list)
 
+
 class CompanyShort(CompanyDB):
-    size : int
+    size: int
 
 
 class CreateCompanyResponse(BaseCreateResponse):

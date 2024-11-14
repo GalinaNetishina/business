@@ -4,7 +4,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import BaseModel, uuid_pk
 
 
-
 class UserModel(BaseModel):
     __tablename__ = "user"
 

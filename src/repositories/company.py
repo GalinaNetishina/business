@@ -1,4 +1,3 @@
-
 from sqlalchemy import Result, select
 from sqlalchemy.orm import selectinload
 
@@ -21,10 +20,7 @@ class CompanyRepository(SqlAlchemyRepository):
 
     async def get_companies_with_size(self) -> list[CompanyModel] | None:
         """Find company by ID with all users."""
-        query = (
-            select(self.model)
-            .options(selectinload(self.model.users))
-        )
+        query = select(self.model).options(selectinload(self.model.users))
         res: Result = await self.session.execute(query)
         return res.scalars().all()
 
@@ -32,4 +28,3 @@ class CompanyRepository(SqlAlchemyRepository):
     #     query = select(self.model).filter_by(**kwargs)
     #     res = await self.session.execute(query)
     #     return res.scalars().all()
-
