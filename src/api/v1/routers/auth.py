@@ -27,6 +27,7 @@ from src.utils.auth_validation import (
 
 http_bearer = HTTPBearer()
 
+
 router = APIRouter()
 
 

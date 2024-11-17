@@ -42,4 +42,5 @@ class TaskModel(BaseModel):
         backref="performed_tasks",
         foreign_keys=[performer_id],
         uselist=False,
+        lazy="joined",
     )

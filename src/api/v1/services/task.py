@@ -2,7 +2,7 @@ from starlette.exceptions import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND
 
 from src.models import TaskModel
-from src.schemas.task import TaskRequest, TaskDB
+from src.schemas.task import TaskRequest, TaskDB, TaskUpdateRequest
 
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
@@ -18,7 +18,7 @@ class TaskService(BaseService):
         )
 
     @transaction_mode
-    async def update_task(self, task):
+    async def update_task(self, task: TaskUpdateRequest):
         await self._check_task_exists(task.id)
         res = await self.uow.task.update_one_by_id(
             task.id, **task.model_dump(exclude_unset=True)

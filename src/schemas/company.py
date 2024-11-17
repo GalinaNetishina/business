@@ -18,6 +18,10 @@ class CompanyDB(CompanyRequest):
     id: UUID4
 
 
+class CompanyUpdateResponse(BaseResponse):
+    payload: CompanyDB
+
+
 class CompanyWithUsers(CompanyDB):
     users: list[UserDB] | None = Field(default_factory=list)
 

@@ -1,25 +1,28 @@
-from sqlalchemy import Result, select
+from sqlalchemy import select, func
 
-from src.models import CompanyModel, PositionModel
+from src.models import PositionModel, StructureModel
 from src.utils.repository import SqlAlchemyRepository
 
 
 class StructureRepository(SqlAlchemyRepository):
+    model = StructureModel
+
+
+class PositionRepository(SqlAlchemyRepository):
     model = PositionModel
 
-    async def get_positions(self) -> CompanyModel | None:
+    async def get_subtree(self, pos_id):
+        position = await self.get_by_query_one_or_none(id=pos_id)
+        query = select(self.model).filter(self.model.path.descendant_of(position.path))
+        print(query)
+        res = await self.session.execute(query)
+        return res.scalars().all()
+
+    async def get_root(self, company_id):
         query = (
             select(self.model)
-            # .where(self.model.company_id == company_id)
+            .where(self.model.company_id == company_id)
+            .filter(func.nlevel(self.model.path) == 1)
         )
-        res: Result = await self.session.execute(query)
-        return res.scalar_one_or_none()
-
-    # async def get_company_positions(self, company_id) -> CompanyModel | None:
-    #     """Find company by ID with all positions."""
-    #     query = (
-    #         select(self.submodel)
-    #         .where(self.submodel.company_id == company_id)
-    #     )
-    #     res: Result = await self.session.execute(query)
-    #     return res.scalar_one_or_none()
+        res = await self.session.execute(query)
+        return res.scalars().all()

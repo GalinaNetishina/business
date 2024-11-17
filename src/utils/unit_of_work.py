@@ -11,8 +11,9 @@ from src.database.db import async_session_maker
 from src.repositories import (
     CompanyRepository,
     UserRepository,
-    StructureRepository,
     TaskRepository,
+    PositionRepository,
+    StructureRepository,
 )
 
 
@@ -55,6 +56,7 @@ class UnitOfWork(AbstractUnitOfWork):
         self.session = self.session_factory()
         self.company = CompanyRepository(self.session)
         self.user = UserRepository(self.session)
+        self.position = PositionRepository(self.session)
         self.structure = StructureRepository(self.session)
         self.task = TaskRepository(self.session)
 

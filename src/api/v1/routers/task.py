@@ -14,7 +14,7 @@ from src.schemas.task import (
     TaskFilters,
 )
 
-from src.utils.dependencies import get_service_dep, get_user_from_token
+from src.utils.dependencies import get_service_dep
 
 router = APIRouter(prefix="/task")
 
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/task")
 )
 async def create_task(
     task: TaskRequest,
-    user=get_user_from_token,
+    # user=get_user_from_token,
     service=get_service_dep("task"),
 ) -> CreateTaskResponse:
     """Create task."""
@@ -40,7 +40,8 @@ async def create_task(
     status_code=HTTP_200_OK,
 )
 async def get_tasks_with_filters(
-    service=get_service_dep("task"), filters: TaskFilters = Depends(TaskFilters)
+    filters: TaskFilters = Depends(TaskFilters),
+    service=get_service_dep("task"),
 ) -> TaskListResponse:
     tasks: list[TaskDB] = await service.get_tasks_by_query(
         **filters.model_dump(exclude_unset=True)
@@ -48,9 +49,12 @@ async def get_tasks_with_filters(
     return TaskListResponse(payload=tasks)
 
 
+# TODO не проходит валидацию observer и performer в TaskDB
 @router.patch(path="/{id}", status_code=HTTP_200_OK)
 async def update_task_status(
-    task: TaskUpdateRequest = Form(...), service=get_service_dep("task")
+    # task: TaskUpdateRequest = Depends(TaskUpdateRequest),
+    task: TaskUpdateRequest = Form(...),
+    service=get_service_dep("task"),
 ):
     task = await service.update_task(task)
     return task

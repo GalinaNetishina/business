@@ -13,7 +13,9 @@ from src.schemas.company import (
     CompanyListResponse,
     CompanyShort,
     CompanyUpdateRequest,
+    CompanyUpdateResponse,
 )
+
 from src.utils.dependencies import token_dep, get_service_dep
 
 router = APIRouter(prefix="/company")
@@ -29,8 +31,10 @@ async def create_company(
     service=get_service_dep("company"),
 ) -> CreateCompanyResponse:
     """Create company."""
+    # создающий пользователь был бы админом
     # user = await get_current_user_from_token(token)
     # created_company = await service.create_company(company, user)
+
     created_company = await service.create_company(company)
     return CreateCompanyResponse(
         payload=CompanyDB.model_validate(created_company, from_attributes=True)
@@ -61,7 +65,7 @@ async def get_companies(
     return CompanyListResponse(payload=list(res))
 
 
-@router.put(
+@router.patch(
     path="/{id}",
     status_code=HTTP_200_OK,
 )
@@ -69,9 +73,9 @@ async def update_company(
     id: UUID4,
     company: CompanyUpdateRequest,
     service=get_service_dep("company"),
-) -> CompanyResponse:
-    updated_user = await service.update_company(id, company)
-    return CompanyResponse(payload=CompanyDB.model_validate(updated_user))
+) -> CompanyUpdateResponse:
+    updated_user = await service.update_company(id=id, company=company)
+    return CompanyUpdateResponse(payload=updated_user)
 
 
 @router.delete(
@@ -82,4 +86,4 @@ async def delete_company(
     id: UUID4,
     service=get_service_dep("company"),
 ) -> None:
-    await service.delete_company(id)
+    await service.delete_company(id=id)

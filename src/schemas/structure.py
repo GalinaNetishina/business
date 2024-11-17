@@ -24,7 +24,7 @@ class StructureBase(BaseModel):
 
 class CreatePosPayload(BaseModel):
     name: str
-    id: UUID4
+    id: int
     parent: str | None = None
     children: list[str] = Field(default_factory=list)
 

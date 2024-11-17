@@ -7,10 +7,10 @@ import src.api.v1.routers as routs
 from .schemas.response import ErrorResponse
 
 router = APIRouter()
-# router.include_router(routs.v1_user_router, prefix="/v1", tags=["User | v1"])
-# router.include_router(routs.v1_company_router, prefix="/v1", tags=["Company | v1"])
 router.include_router(routs.auth_router, prefix="/v1", tags=["Auth | v1"])
-# router.include_router(routs.router1, tags=["Structure | v1"])
+router.include_router(routs.v1_user_router, prefix="/v1", tags=["User | v1"])
+router.include_router(routs.v1_company_router, prefix="/v1", tags=["Company | v1"])
+router.include_router(routs.v1_structure_router, prefix="/v1", tags=["Structure | v1"])
 router.include_router(routs.v1_task_router, prefix="/v1", tags=["Task | v1"])
 
 app = FastAPI(title="Business Management System")
