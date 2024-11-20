@@ -19,7 +19,7 @@ LTreeField = Annotated[
     PlainSerializer(lambda v: v.path),
     WithJsonSchema({"type": "string", "examples": ["same.path"]}),
 ]
-
+BaseModel.model_config = ConfigDict(from_attributes=True)
 
 # from src.schemas.user import UserDB
 class BasePosition(BaseModel):
@@ -29,22 +29,16 @@ class BasePosition(BaseModel):
     # parent: UUID4 | None = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-
-class FullStructure(BasePosition):
-    boss: BasePosition | None = None
+class FullPosition(BasePosition):
+    boss: list[BasePosition] = Field(default_factory=list)
     subordinates: list[BasePosition] = Field(default_factory=list)
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
 
 class StructureBase(BaseModel):
     company_id: UUID4
-    positions: list[FullStructure]
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    positions: list[FullPosition]
 
-
-class CreatePosPayload(BaseCreateResponse):
-    payload: FullStructure
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+class CreatePosResponse(BaseCreateResponse):
+    payload: FullPosition
 
 class StructuresResponse(BaseResponse):
     payload: list[BasePosition]

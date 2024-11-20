@@ -30,7 +30,7 @@ class CompanyRepository(SqlAlchemyRepository):
         query = (
             select(self.model)
             .where(self.model.id == company_id)
-            .options(selectinload(self.model.structure))
+            .options(joinedload(self.model.structure))
         )
         res: Result = await self.session.execute(query)
         return res.scalar()
@@ -41,7 +41,7 @@ class CompanyRepository(SqlAlchemyRepository):
         query = (
             select(self.model)
             .filter_by(**kwargs)
-            .options(selectinload(self.model.structure))
+            .options(joinedload(self.model.structure))
         )
         res: Result = await self.session.execute(query)
         return res.scalar()
