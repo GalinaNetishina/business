@@ -22,10 +22,13 @@ async_session_maker = async_sessionmaker(
     autocommit=False,
     expire_on_commit=False,
 )
+
+
 def get_session():
-    ses =  sessionmaker(bind=engine)
+    ses = sessionmaker(bind=engine)
     with ses() as session:
         yield session
+
 
 async def get_async_connection() -> AsyncGenerator[AsyncConnection, None]:
     async with async_engine.begin() as conn:

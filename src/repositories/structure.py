@@ -1,14 +1,11 @@
-from sqlalchemy import select, func, text
-from sqlalchemy.sql import expression
-from sqlalchemy_utils import Ltree
+from sqlalchemy import select, func
 
-from src.models import PositionModel
+from src.models import StructureModel
 from src.utils.repository import SqlAlchemyRepository
-from sqlalchemy_utils.types.ltree import LQUERY
 
 
-class PositionRepository(SqlAlchemyRepository):
-    model = PositionModel
+class StructureRepository(SqlAlchemyRepository):
+    model = StructureModel
 
     async def get_subtree(self, pos_id):
         position = await self.get_by_query_one_or_none(id=pos_id)
@@ -25,7 +22,6 @@ class PositionRepository(SqlAlchemyRepository):
         query = select(self.model).filter(self.model.path.ancestor_of(position.path))
         res = await self.session.execute(query)
         return res.scalars().all()[-2:-1]
-
 
     async def get_root(self, company_id):
         query = (

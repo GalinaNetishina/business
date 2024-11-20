@@ -7,9 +7,6 @@ from starlette.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT
 
 from src.schemas.task import (
     TaskRequest,
-    CreateTaskResponse,
-    TaskDB,
-    TaskListResponse,
     TaskUpdateRequest,
     TaskFilters,
 )
@@ -27,11 +24,10 @@ async def create_task(
     task: TaskRequest,
     # user=get_user_from_token,
     service=get_service_dep("task"),
-)  :
+):
     """Create task."""
     created_task = await service.create_task(task)
     return created_task
-
 
 
 @router.get(
@@ -41,10 +37,8 @@ async def create_task(
 async def get_tasks_with_filters(
     filters: TaskFilters = Depends(TaskFilters),
     service=get_service_dep("task"),
-) :
-    tasks = await service.get_tasks_by_query(
-        **filters.model_dump(exclude_unset=True)
-    )
+):
+    tasks = await service.get_tasks_by_query(**filters.model_dump(exclude_unset=True))
     return tasks
 
 
