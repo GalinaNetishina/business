@@ -28,19 +28,19 @@ class TaskModel(BaseModel):
     update_data: Mapped[updated_at]
     additional: Mapped[dict | None] = mapped_column(JSON)
 
-    observer_id: Mapped[UUID | None] = mapped_column(ForeignKey("user.id"))
-    performer_id: Mapped[UUID | None] = mapped_column(ForeignKey("user.id"))
-    observer: Mapped["UserModel"] = relationship(
-        "UserModel",
-        backref="observed_tasks",
-        foreign_keys=[observer_id],
-        uselist=False,
-        lazy="joined",
-    )
-    performer: Mapped["UserModel"] = relationship(
-        "UserModel",
-        backref="performed_tasks",
-        foreign_keys=[performer_id],
-        uselist=False,
-        lazy="joined",
-    )
+    # observer_id: Mapped[UUID | None] = mapped_column(ForeignKey("user.id"))
+    # performer_id: Mapped[UUID | None] = mapped_column(ForeignKey("user.id"))
+    # observer: Mapped["UserModel"] = relationship(
+    #     "UserModel",
+    #     backref="observed_tasks",
+    #     foreign_keys=[observer_id],
+    #     uselist=False,
+    #     # lazy="joined",
+    # )
+    # performer: Mapped["UserModel"] = relationship(
+    #     "UserModel",
+    #     backref="performed_tasks",
+    #     foreign_keys=[performer_id],
+    #     uselist=False,
+    #     # lazy="joined",
+    # )

@@ -27,12 +27,11 @@ async def create_task(
     task: TaskRequest,
     # user=get_user_from_token,
     service=get_service_dep("task"),
-) -> CreateTaskResponse:
+)  :
     """Create task."""
     created_task = await service.create_task(task)
-    return CreateTaskResponse(
-        payload=TaskDB.model_validate(created_task, from_attributes=True)
-    )
+    return created_task
+
 
 
 @router.get(
@@ -42,11 +41,11 @@ async def create_task(
 async def get_tasks_with_filters(
     filters: TaskFilters = Depends(TaskFilters),
     service=get_service_dep("task"),
-) -> TaskListResponse:
-    tasks: list[TaskDB] = await service.get_tasks_by_query(
+) :
+    tasks = await service.get_tasks_by_query(
         **filters.model_dump(exclude_unset=True)
     )
-    return TaskListResponse(payload=tasks)
+    return tasks
 
 
 # TODO не проходит валидацию observer и performer в TaskDB

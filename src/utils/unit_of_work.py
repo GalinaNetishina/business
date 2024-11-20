@@ -13,7 +13,6 @@ from src.repositories import (
     UserRepository,
     TaskRepository,
     PositionRepository,
-    StructureRepository,
 )
 
 
@@ -57,7 +56,6 @@ class UnitOfWork(AbstractUnitOfWork):
         self.company = CompanyRepository(self.session)
         self.user = UserRepository(self.session)
         self.position = PositionRepository(self.session)
-        self.structure = StructureRepository(self.session)
         self.task = TaskRepository(self.session)
 
     async def __aexit__(

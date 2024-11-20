@@ -23,8 +23,8 @@ class TaskRequest(BaseModel):
 
 class TaskUpdateRequest(BaseModel):
     id: UUID4
-    performer_id: UUID4 | None = None
-    observer_id: UUID4 | None = None
+    # performer_id: UUID4 | None = None
+    # observer_id: UUID4 | None = None
     status: Statuses = Statuses.CREATED
     importance: Priorities = Priorities.STANDARD
     tags: list[str] = Field(default_factory=list)
@@ -39,8 +39,8 @@ class TaskDB(TaskRequest):
 
 
 class TaskFilters(Filter):
-    performer_id: UUID4 | None = None
-    observer_id: UUID4 | None = None
+    # performer_id: UUID4 | None = None
+    # observer_id: UUID4 | None = None
     status: Statuses = Statuses.CREATED
     importance: Priorities = Priorities.STANDARD
     # tags: list[str] = Field(default_factory=list)

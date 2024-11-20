@@ -33,6 +33,7 @@ class CompanyRepository(SqlAlchemyRepository):
             .options(selectinload(self.model.positions))
         )
         res: Result = await self.session.execute(query)
+        print(res)
         return res.scalars().all()
 
     async def get_company_by_query_one_or_none(

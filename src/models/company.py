@@ -12,8 +12,9 @@ class CompanyModel(BaseModel):
     inn: Mapped[int] = mapped_column(Integer, unique=True)
     company_name: Mapped[str] = Column(String(256))
     positions: Mapped[list["PositionModel"]] = relationship(
-        "PositionModel", back_populates="company"
+        "PositionModel", back_populates="company",
     )
+
     # admin_id: Mapped[UUID | None] = mapped_column(ForeignKey('user.id'))
     # user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'), nullable=True)
     # admin = relationship(
@@ -22,5 +23,4 @@ class CompanyModel(BaseModel):
     #     uselist=False,
     #     foreign_keys=[admin_id]
     # )
-
     users = relationship("UserModel", viewonly=True)

@@ -1,47 +1,37 @@
 from pydantic import UUID4
-from sqlalchemy import func, Column, Index, Integer, ForeignKey, UUID
-from sqlalchemy.orm import Mapped, relationship, foreign, remote, mapped_column
+from sqlalchemy import func, Column, Index, Integer, ForeignKey, UUID, Sequence
+from sqlalchemy.orm import Mapped, relationship, foreign, remote
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel
+from src.database import  get_session
 
 
-# company_positions_at=Table(
-#     "structure",
-#     BaseModel.metadata,
-#     Column('id', Integer, primary_key=True),
-#     Column('company_id', ForeignKey("company.id"), nullable=False),
-#     Column('position_id', ForeignKey("position.id"), nullable=False),
-#     UniqueConstraint('company_id', 'position_id', name='idx_uniq_company_position')
-# )
-class StructureModel(BaseModel):
-    __tablename__ = "structure"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    company_id: Mapped[UUID4] = Column(UUID, ForeignKey("company.id"), nullable=True)
-    position_id: Mapped[list[int]] = Column(
-        Integer, ForeignKey("position.id"), nullable=True
-    )
-    # company = relationship('CompanyModel', uselist=False, back_populates='structure')
-    # positions = relationship("PositionModel", back_populates='structure')
-
-
+id_seq = Sequence('position_id_seq')
 class PositionModel(BaseModel):
     __tablename__ = "position"
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    id =Column(Integer, primary_key=True)
+    id = Column(Integer, id_seq, primary_key=True)
     name: Mapped[str]
     path = Column(LtreeType, nullable=True)
     company_id: Mapped[UUID4] = Column(UUID, ForeignKey("company.id"), nullable=True)
-    company = relationship("CompanyModel")
+    company = relationship("CompanyModel", back_populates='positions')
 
     boss = relationship(
         "PositionModel",
         primaryjoin=remote(path) == foreign(func.subpath(path, 0, -1)),
         backref="subordinates",
         lazy="joined",
+        viewonly=True
     )
 
     def __init__(self, name, parent=None):
-        self.name = name
-        ltree_id = Ltree(str(self.name))
-        self.path = ltree_id if parent is None else parent.path + ltree_id
+            session = next(get_session())
+            _id = session.execute(id_seq)
+            self.id = _id
+            self.name = name
+            ltree_id = Ltree(str(_id))
+            self.path = ltree_id if parent is None else parent.path + ltree_id
+            session.commit()
 
-    __table_args__ = (Index("ix_positions_path", path, postgresql_using="gist"),)
+
+    __table_args__ = (Index("ix_position_path", path, postgresql_using="gist"),)

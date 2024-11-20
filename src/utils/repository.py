@@ -87,7 +87,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     async def get_by_query_all(self, **kwargs: Any) -> Sequence[M]:
         query = select(self.model).filter_by(**kwargs)
-        print(query, kwargs)
+        # print(query, kwargs)
         res = await self.session.execute(query)
         return res.scalars().all()
 
