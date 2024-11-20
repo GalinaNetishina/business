@@ -23,6 +23,7 @@ LTreeField = Annotated[
 
 # from src.schemas.user import UserDB
 class BasePosition(BaseModel):
+    id: int
     name: str
     path: LTreeField | None = None
     # parent: UUID4 | None = None

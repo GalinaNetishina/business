@@ -1,6 +1,6 @@
-__all__ = ["CompanyService", "UserService", "PositionService", "TaskService"]
+__all__ = ["CompanyService", "UserService", "StructureService", "TaskService"]
 
 from .company import CompanyService
-from .positions import PositionService
+from .positions import StructureService
 from .user import UserService
 from .task import TaskService

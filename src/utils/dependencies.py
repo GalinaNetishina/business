@@ -31,5 +31,5 @@ services = {
     "company": serv.CompanyService,
     "user": serv.UserService,
     "task": serv.TaskService,
-    "position": serv.PositionService,
+    "structure": serv.StructureService,
 }

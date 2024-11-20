@@ -1,6 +1,6 @@
 from pydantic import UUID4
-from sqlalchemy import Column, Index, Integer, ForeignKey, UUID, Sequence, inspect
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Column, Index, Integer, ForeignKey, UUID, Sequence, inspect, func
+from sqlalchemy.orm import Mapped, relationship, remote, foreign
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel
 from src.database import get_session
@@ -17,14 +17,6 @@ class StructureModel(BaseModel):
     path = Column(LtreeType, nullable=True)
     company_id: Mapped[UUID4] = Column(UUID, ForeignKey("company.id"), nullable=True)
     company = relationship("CompanyModel", back_populates="structure")
-
-    # boss = relationship(
-    #     "StructureModel",
-    #     primaryjoin=remote(path) == foreign(func.subpath(path, 0, -1)),
-    #     backref="subordinates",
-    #     lazy="joined",
-    #     viewonly=True
-    # )
 
     def __init__(self, name, parent=None):
         session = next(get_session())

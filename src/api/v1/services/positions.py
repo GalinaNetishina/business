@@ -1,13 +1,20 @@
+
 from starlette.exceptions import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND
 
 from src.models import StructureModel
+from src.schemas.structure import BasePosition
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
 
-class PositionService(BaseService):
-    base_repository = "position"
+class StructureService(BaseService):
+    base_repository = "structure"
+
+    @transaction_mode
+    async def get_position(self, pos_id) -> BasePosition | None:
+        res= await self.uow.structure.get_by_query_one_or_none(id=pos_id)
+        return BasePosition.model_validate(res , from_attributes = True)
 
     @transaction_mode
     async def get_subordinates(self, pos_id, **kwargs) -> list[StructureModel]:
