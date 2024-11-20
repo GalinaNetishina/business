@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from starlette.status import HTTP_200_OK
 
-from src.schemas.structure import CreatePosPayload, FullPosition
+from src.schemas.company import CompanyWithStructure
+from src.schemas.structure import CreatePosPayload, StructuresResponse, BasePosition
 from src.utils.dependencies import get_service_dep
 
 
@@ -22,14 +23,14 @@ async def add_company_positions(
     # user = await get_current_user_from_token(token)
     pos = await service.add_position(title, company_id, parent_id)
     return CreatePosPayload(
-        payload=FullPosition.model_validate(pos, from_attributes=True)
+        payload=BasePosition.model_validate(pos, from_attributes=True)
     )
 
 
 @router.get(path="/{company_id}", status_code=HTTP_200_OK)
 async def get_positions(company_id, service=get_service_dep("company")):
     res = await service.get_positions(company_id=company_id)
-    return res
+    return CompanyWithStructure.model_validate(res, from_attributes=True)
 
 
 @router.get(path="/{position_id:int}/subordinates", status_code=HTTP_200_OK)

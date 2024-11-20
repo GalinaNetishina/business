@@ -30,11 +30,10 @@ class CompanyRepository(SqlAlchemyRepository):
         query = (
             select(self.model)
             .where(self.model.id == company_id)
-            .options(selectinload(self.model.positions))
+            .options(selectinload(self.model.structure))
         )
         res: Result = await self.session.execute(query)
-        print(res)
-        return res.scalars().all()
+        return res.scalar()
 
     async def get_company_by_query_one_or_none(
         self, **kwargs: Any
@@ -42,7 +41,7 @@ class CompanyRepository(SqlAlchemyRepository):
         query = (
             select(self.model)
             .filter_by(**kwargs)
-            .options(joinedload(self.model.positions))
+            .options(selectinload(self.model.structure))
         )
         res: Result = await self.session.execute(query)
         return res.scalar()

@@ -11,7 +11,7 @@ from pydantic import (
 )
 from sqlalchemy_utils import Ltree
 
-from src.schemas.response import BaseCreateResponse
+from src.schemas.response import BaseCreateResponse, BaseResponse
 
 LTreeField = Annotated[
     Ltree,
@@ -29,23 +29,21 @@ class BasePosition(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-class FullPosition(BasePosition):
+class FullStructure(BasePosition):
     boss: BasePosition | None = None
     subordinates: list[BasePosition] = Field(default_factory=list)
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-# class Position(BasePosition):
-#     prev: BasePosition | None = None
-#     next: BasePosition | None = None
-
-
 class StructureBase(BaseModel):
     company_id: UUID4
-    positions: list[BasePosition]
+    positions: list[FullStructure]
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class CreatePosPayload(BaseCreateResponse):
-    payload: FullPosition
+    payload: FullStructure
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
+class StructuresResponse(BaseResponse):
+    payload: list[BasePosition]

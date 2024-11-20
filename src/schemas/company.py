@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, UUID4
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
+from src.schemas.structure import BasePosition
 from src.schemas.user import UserDB
 
 
@@ -24,6 +25,9 @@ class CompanyUpdateResponse(BaseResponse):
 
 class CompanyWithUsers(CompanyDB):
     users: list[UserDB] | None = Field(default_factory=list)
+
+class CompanyWithStructure(CompanyDB):
+    structure: list[BasePosition] = Field(default_factory=list)
 
 
 class CompanyShort(CompanyDB):

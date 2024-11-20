@@ -16,7 +16,7 @@ class StructureModel(BaseModel):
     name: Mapped[str]
     path = Column(LtreeType, nullable=True)
     company_id: Mapped[UUID4] = Column(UUID, ForeignKey("company.id"), nullable=True)
-    company = relationship("CompanyModel", back_populates="positions")
+    company = relationship("CompanyModel", back_populates="structure")
 
     # boss = relationship(
     #     "StructureModel",
