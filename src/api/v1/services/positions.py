@@ -25,17 +25,19 @@ class PositionService(BaseService):
 
     @transaction_mode
     async def add_position(self, title, company_id, parent_id) -> StructureModel:
-        if parent_id:
+
             parent = await self.uow.structure.get_by_query_one_or_none(id=parent_id)
             # pos = await PositionModel(name=title, parent=parent, session=self.uow.session)
-            pos = StructureModel(name=title, parent=parent)
-        else:
-            pos = StructureModel(name=title)
+            res = await self.uow.structure.add_one_and_get_obj(
+                **StructureModel(name=title, parent=parent).to_dict(),
+                # company_id=company_id
+            )
+            # pos = StructureModel(name=title, parent=parent)
+        # else:
+        #     pos = StructureModel(name=title)
             # pos = await PositionModel(name=title, session=self.uow.session)
-        res = await self.uow.structure.add_one_and_get_obj(
-            name=pos.name, path=pos.path, company_id=company_id
-        )
-        return res
+
+            return res
 
     async def _check_structure_exists(self, id) -> None:
         exist = await self.uow.structure.check_exists(id)

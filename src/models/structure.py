@@ -1,5 +1,5 @@
 from pydantic import UUID4
-from sqlalchemy import Column, Index, Integer, ForeignKey, UUID, Sequence
+from sqlalchemy import Column, Index, Integer, ForeignKey, UUID, Sequence, inspect
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy_utils import LtreeType, Ltree
 from .base import BaseModel
@@ -34,5 +34,8 @@ class StructureModel(BaseModel):
         ltree_id = Ltree(str(_id))
         self.path = ltree_id if parent is None else parent.path + ltree_id
         session.commit()
+
+    def to_dict(self):
+        return {c.key: getattr(self, c.key) for c in inspect(self).mapper.column_attrs}
 
     __table_args__ = (Index("ix_structure_path", path, postgresql_using="gist"),)
