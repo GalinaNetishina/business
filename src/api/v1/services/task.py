@@ -18,12 +18,12 @@ class TaskService(BaseService):
         )
 
     @transaction_mode
-    async def update_task(self, task: TaskUpdateRequest):
+    async def update_task(self, task: TaskUpdateRequest) -> TaskDB:
         await self._check_task_exists(task.id)
         res = await self.uow.task.update_one_by_id(
             task.id, **task.model_dump(exclude_unset=True)
         )
-        return TaskDB.model_validate(res, from_attributes=True)
+        return TaskDB.model_validate(res)
 
     @transaction_mode
     async def delete_task(self, id) -> None:
@@ -33,7 +33,7 @@ class TaskService(BaseService):
     @transaction_mode
     async def get_tasks_by_query(self, **kwargs) -> list[TaskDB]:
         res = await self.uow.task.get_by_query_all(**kwargs)
-        return list(map(lambda x: TaskDB.model_validate(x, from_attributes=True), res))
+        return list(map(lambda x: TaskDB.model_validate(x), res))
 
     async def _check_task_exists(self, id) -> None:
         exist = await self.uow.task.check_exists(id)

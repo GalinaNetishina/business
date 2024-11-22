@@ -36,16 +36,14 @@ async def register_user(
     user_data: UserRequest, service: UserService = Depends(UserService)
 ):
     created_user = await service.create_user(user_data)
-    return CreateUserResponse(
-        payload=UserDB.model_validate(created_user, from_attributes=True)
-    )
+    return CreateUserResponse(payload=UserDB.model_validate(created_user))
 
 
 @router.post(
     "/login/", response_model=UserLoginResponse, status_code=status.HTTP_200_OK
 )
 def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user)):
-    user = UserSchema.model_validate(user, from_attributes=True)
+    user = UserSchema.model_validate(user)
     token = auth_utils.create_access_token(user)
     payload = TokenInfo(
         access_token=token,
@@ -57,4 +55,4 @@ def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user)):
 @router.get("/users/me/", status_code=status.HTTP_200_OK)
 async def auth_user_check_self_info(token=Depends(http_bearer)):
     user = await get_current_user_from_token(token)
-    return UserResponse(payload=UserDB.model_validate(user, from_attributes=True))
+    return UserResponse(payload=UserDB.model_validate(user))

@@ -42,7 +42,6 @@ async def get_tasks_with_filters(
     return tasks
 
 
-# TODO не проходит валидацию observer и performer в TaskDB
 @router.patch(path="/{id}", status_code=HTTP_200_OK)
 async def update_task_status(
     # task: TaskUpdateRequest = Depends(TaskUpdateRequest),

@@ -1,5 +1,7 @@
 from sqlalchemy import select, func
 from sqlalchemy.orm import joinedload
+from sqlalchemy.sql import expression
+from sqlalchemy_utils.types.ltree import LQUERY
 
 from src.models import StructureModel
 from src.utils.repository import SqlAlchemyRepository
@@ -23,6 +25,14 @@ class StructureRepository(SqlAlchemyRepository):
         if not position:
             return None
         query = select(self.model).filter(self.model.path.descendant_of(position.path))
+        res = await self.session.execute(query)
+        return res.scalars().all()
+
+    async def get_by_path_part(self, id):
+        template = f"*.{id}.*"
+        query = select(self.model).filter(
+            self.model.path.lquery(expression.cast(template, LQUERY))
+        )
         res = await self.session.execute(query)
         return res.scalars().all()
 

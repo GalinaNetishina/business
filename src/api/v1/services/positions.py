@@ -1,3 +1,4 @@
+from sqlalchemy_utils import Ltree
 from starlette.exceptions import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND
 
@@ -29,6 +30,17 @@ class StructureService(BaseService):
         )
         await self.uow.structure.update_one_by_id(res.id, company_id=company_id)
         return res
+
+    @transaction_mode
+    async def delete_position(self, id) -> None:
+        await self._check_structure_exists(id)
+        for row in await self.uow.structure.get_by_path_part(id):
+            # print('found: ', row)
+            row.path = Ltree(
+                (str(row.path).replace(f"{id}", "")).replace("..", ".").strip(".")
+            )
+            # print("new path: ", row.path)
+        await self.uow.structure.delete_by_query(id=id)
 
     async def _check_structure_exists(self, id) -> None:
         exist = await self.uow.structure.check_exists(id)

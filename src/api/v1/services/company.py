@@ -19,21 +19,16 @@ class CompanyService(BaseService):
     # async def create_company(self, company: CompanyRequest, admin) -> CompanyModel:
     async def create_company(self, company: CompanyRequest) -> CompanyModel:
         """Create company."""
-
         res = await self.uow.company.add_one_and_get_obj(
             **company.model_dump(),
             # admin_id=admin.id
         )
-        # str_id = await self.uow.structure.add_one_and_get_id(company_id=res.id)
-
         return res
 
     @transaction_mode
     async def get_companies(self) -> list[CompanyWithUsers]:
         res = await self.uow.company.get_companies_with_size()
-        return list(
-            map(lambda x: CompanyWithUsers.model_validate(x, from_attributes=True), res)
-        )
+        return list(map(lambda x: CompanyWithUsers.model_validate(x), res))
 
     @transaction_mode
     async def get_company_with_users(self, company_id) -> CompanyWithUsers:
@@ -41,7 +36,7 @@ class CompanyService(BaseService):
         company: CompanyModel | None = await self.uow.company.get_company_with_users(
             company_id
         )
-        return CompanyWithUsers.model_validate(company, from_attributes=True)
+        return CompanyWithUsers.model_validate(company)
 
     @transaction_mode
     async def get_company_positions(self, company_id) -> CompanyWithUsers:
@@ -49,7 +44,7 @@ class CompanyService(BaseService):
         company: CompanyModel | None = await self.uow.company.get_company_positions(
             company_id
         )
-        return CompanyWithUsers.model_validate(company, from_attributes=True)
+        return CompanyWithUsers.model_validate(company)
 
     @transaction_mode
     async def update_company(self, id, company: CompanyUpdateRequest) -> CompanyDB:
@@ -57,7 +52,7 @@ class CompanyService(BaseService):
         company: CompanyModel | None = await self.uow.company.update_one_by_id(
             obj_id=id, **company.model_dump(exclude_unset=True)
         )
-        return CompanyDB.model_validate(company, from_attributes=True)
+        return CompanyDB.model_validate(company)
 
     @transaction_mode
     async def delete_company(self, id) -> None:

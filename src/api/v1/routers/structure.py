@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from starlette.status import HTTP_200_OK
+from starlette.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 
 from src.schemas.structure import (
     StructuresResponse,
@@ -36,13 +36,6 @@ async def get_position(pos_id, service=get_service_dep("structure")):
     return PosResponse(payload=FullPosition.model_validate(res))
 
 
-@router.get(path="/{position_id:int}/subordinates", status_code=HTTP_200_OK)
-async def get_subordinates(position_id, service=get_service_dep("structure")):
-    res = await service.get_subordinates(pos_id=position_id)
-    return StructuresResponse(payload=res)
-
-
-@router.get(path="/{position_id:int}/boss", status_code=HTTP_200_OK)
-async def get_boss(position_id, service=get_service_dep("structure")):
-    res = await service.get_boss(position_id)
-    return StructuresResponse(payload=res)
+@router.delete(path="/{pos_id:int}", status_code=HTTP_204_NO_CONTENT)
+async def delete_position(pos_id, service=get_service_dep("structure")) -> None:
+    await service.delete_position(pos_id)
