@@ -35,4 +35,4 @@ class BaseModel(DeclarativeBase):
 
         return f'<{self.__class__.__name__} {", ".join(cols)}>'
 
-    model_config = ConfigDict(from_attributes = True)
+    model_config = ConfigDict(from_attributes=True)

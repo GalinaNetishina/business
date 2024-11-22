@@ -33,8 +33,8 @@ class FullPosition(BasePosition):
 
 class UpdatePosition(BaseModel):
     name: str | None = None
-    boss: BasePosition | None = None
-    subordinates: list[BasePosition] = Field(default_factory=list)
+    boss_id: int | None = None
+    # subordinates: list[BasePosition] = Field(default_factory=list)
 
 
 class StructureBase(BaseModel):
@@ -47,7 +47,7 @@ class CreatePosResponse(BaseCreateResponse):
 
 
 class PosResponse(BaseResponse):
-    payload: FullPosition
+    payload: FullPosition | BasePosition
 
 
 class StructuresResponse(BaseResponse):

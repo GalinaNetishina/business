@@ -36,6 +36,15 @@ class StructureRepository(SqlAlchemyRepository):
         res = await self.session.execute(query)
         return res.scalars().all()
 
+    async def get_by_path_part_any(self, id):
+        template = f"{id}.*"
+        query = select(self.model).filter(
+            self.model.path.lquery(expression.cast(template, LQUERY))
+        )
+        print(query)
+        res = await self.session.execute(query)
+        return res.scalars().all()
+
     async def get_root(self, company_id):
         query = (
             select(self.model)
