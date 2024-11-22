@@ -27,7 +27,7 @@ async def create_user(
 ) -> CreateUserResponse:
     """Create user."""
     created_user = await service.create_user(user)
-    return CreateUserResponse(payload=UserDB.model_validate(created_user))
+    return CreateUserResponse(payload=created_user)
 
 
 @router.get(
@@ -40,7 +40,7 @@ async def get_user(
 ) -> UserResponse:
     """Get user by ID."""
     user = await service.get_user_by_id(user_id)
-    return UserResponse(payload=UserDB.model_validate(user))
+    return UserResponse(payload=user)
 
 
 @router.patch(
@@ -54,7 +54,7 @@ async def update_user(
 ) -> UserResponse:
     """Update user."""
     updated_user = await service.update_user(user_id, user)
-    return UserResponse(payload=UserDB.model_validate(updated_user))
+    return UserResponse(payload=updated_user)
 
 
 @router.delete(

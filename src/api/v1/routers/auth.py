@@ -36,14 +36,14 @@ async def register_user(
     user_data: UserRequest, service: UserService = Depends(UserService)
 ):
     created_user = await service.create_user(user_data)
-    return CreateUserResponse(payload=UserDB.model_validate(created_user))
+    return CreateUserResponse(payload=created_user)
 
 
 @router.post(
     "/login/", response_model=UserLoginResponse, status_code=status.HTTP_200_OK
 )
 def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user)):
-    user = UserSchema.model_validate(user)
+    user = UserSchema.model_validate(user, from_attributes=True)
     token = auth_utils.create_access_token(user)
     payload = TokenInfo(
         access_token=token,

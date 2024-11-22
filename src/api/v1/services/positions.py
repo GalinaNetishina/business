@@ -12,10 +12,11 @@ class StructureService(BaseService):
     base_repository = "structure"
 
     @transaction_mode
-    async def get_position(self, pos_id) -> BasePosition | None:
+    async def get_position(self, pos_id) :
         await self._check_structure_exists(pos_id)
         res = await self.uow.structure.get_position(pos_id)
-        return FullPosition.model_validate(res)
+        print(res)
+        return res
 
     @transaction_mode
     async def get_root_position(self, company_id):
@@ -41,6 +42,10 @@ class StructureService(BaseService):
             )
             # print("new path: ", row.path)
         await self.uow.structure.delete_by_query(id=id)
+
+    @transaction_mode
+    async def delete_position(self, id, **kwargs):
+        return await self.uow.structure.update_one_by_id(id, kwargs)
 
     async def _check_structure_exists(self, id) -> None:
         exist = await self.uow.structure.check_exists(id)

@@ -19,20 +19,21 @@ LTreeField = Annotated[
     PlainSerializer(lambda v: v.path),
     WithJsonSchema({"type": "string", "examples": ["same.path"]}),
 ]
-BaseModel.model_config = ConfigDict(from_attributes=True)
 
-
-# from src.schemas.user import UserDB
 class BasePosition(BaseModel):
     id: int
     name: str
     path: LTreeField | None = None
-    # parent: UUID4 | None = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class FullPosition(BasePosition):
     boss: BasePosition | None
+    subordinates: list[BasePosition] = Field(default_factory=list)
+
+class UpdatePosition(BaseModel):
+    name: str | None = None
+    boss: BasePosition | None = None
     subordinates: list[BasePosition] = Field(default_factory=list)
 
 
