@@ -17,6 +17,12 @@ class StructureModel(BaseModel):
     path = Column(LtreeType, nullable=True)
     company_id: Mapped[UUID4] = Column(UUID, ForeignKey("company.id"), nullable=True)
     company = relationship("CompanyModel", back_populates="structure")
+    boss = relationship(
+        "StructureModel",
+        primaryjoin=remote(path) == foreign(func.subpath(path, 0, -1)),
+        backref="subordinates",
+        viewonly=True,
+    )
 
     def __init__(self, name, parent=None):
         session = next(get_session())

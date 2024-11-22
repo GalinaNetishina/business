@@ -26,6 +26,7 @@ class CompanyUpdateResponse(BaseResponse):
 class CompanyWithUsers(CompanyDB):
     users: list[UserDB] | None = Field(default_factory=list)
 
+
 class CompanyWithStructure(CompanyDB):
     structure: list[BasePosition] = Field(default_factory=list)
 

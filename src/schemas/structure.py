@@ -21,6 +21,7 @@ LTreeField = Annotated[
 ]
 BaseModel.model_config = ConfigDict(from_attributes=True)
 
+
 # from src.schemas.user import UserDB
 class BasePosition(BaseModel):
     id: int
@@ -29,16 +30,24 @@ class BasePosition(BaseModel):
     # parent: UUID4 | None = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
+
 class FullPosition(BasePosition):
-    boss: list[BasePosition] = Field(default_factory=list)
+    boss: BasePosition | None
     subordinates: list[BasePosition] = Field(default_factory=list)
+
 
 class StructureBase(BaseModel):
     company_id: UUID4
     positions: list[FullPosition]
 
+
 class CreatePosResponse(BaseCreateResponse):
+    payload: BasePosition
+
+
+class PosResponse(BaseResponse):
     payload: FullPosition
+
 
 class StructuresResponse(BaseResponse):
     payload: list[BasePosition]

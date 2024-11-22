@@ -13,7 +13,8 @@ from src.schemas.company import (
     CompanyListResponse,
     CompanyShort,
     CompanyUpdateRequest,
-    CompanyUpdateResponse, CompanyWithStructure,
+    CompanyUpdateResponse,
+    CompanyWithStructure,
 )
 
 from src.utils.dependencies import token_dep, get_service_dep
@@ -39,6 +40,7 @@ async def create_company(
     return CreateCompanyResponse(
         payload=CompanyDB.model_validate(created_company, from_attributes=True)
     )
+
 
 @router.get(path="/{company_id}/positions", status_code=HTTP_200_OK)
 async def get_company_with_positions(company_id, service=get_service_dep("company")):
