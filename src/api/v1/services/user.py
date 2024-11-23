@@ -28,7 +28,7 @@ class UserService(BaseService):
         """Get user by ID."""
         user = await self.uow.user.get_by_query_one_or_none(id=user_id)
         self._check_user_exists(user)
-        return UserDB.model_validate(user, from_attributes = True)
+        return UserDB.model_validate(user, from_attributes=True)
 
     # @transaction_mode
     # async def get_user_by_phone(self, phone_number: str) -> UserModel:
@@ -39,9 +39,7 @@ class UserService(BaseService):
     @transaction_mode
     async def get_user_by_email(self, email: str) -> UserModel:
         """Get user by email."""
-        user = await self.uow.user.get_by_query_one_or_none(
-            email=email
-        )
+        user = await self.uow.user.get_by_query_one_or_none(email=email)
         return user
 
     @transaction_mode
@@ -52,7 +50,7 @@ class UserService(BaseService):
             **user.model_dump(exclude_unset=True),
         )
         self._check_user_exists(user)
-        return UserDB.model_validate(user, from_attributes = True)
+        return UserDB.model_validate(user, from_attributes=True)
 
     @transaction_mode
     async def delete_user(self, user_id: int) -> None:

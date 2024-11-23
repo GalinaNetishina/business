@@ -44,7 +44,7 @@ async def create_company(
 
 @router.get(path="/{company_id}/positions", status_code=HTTP_200_OK)
 async def get_company_with_positions(
-        company_id, service=get_service_dep("company")
+    company_id, service=get_service_dep("company")
 ) -> CompanyWithStructure:
     res = await service.get_positions(company_id=company_id)
     return CompanyWithStructure.model_validate(res)

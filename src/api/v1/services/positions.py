@@ -5,7 +5,7 @@ from starlette.exceptions import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND
 
 from src.models import StructureModel
-from src.schemas.structure import BasePosition, FullPosition, UpdatePosition
+from src.schemas.structure import FullPosition, UpdatePosition
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
@@ -14,7 +14,7 @@ class StructureService(BaseService):
     base_repository = "structure"
 
     @transaction_mode
-    async def get_position(self, pos_id) :
+    async def get_position(self, pos_id):
         await self._check_structure_exists(pos_id)
         res = await self.uow.structure.get_position(pos_id)
         return res
@@ -25,7 +25,7 @@ class StructureService(BaseService):
 
     @transaction_mode
     async def add_position(self, title, company_id, parent_id) -> StructureModel:
-        parent = await self.get_position(parent_id)
+        parent = await self.get_position(parent_id) if parent_id else None
         res = await self.uow.structure.add_one_and_get_obj(
             **StructureModel(name=title, parent=parent).to_dict(),
             # company_id=company_id
@@ -44,28 +44,35 @@ class StructureService(BaseService):
             # print("new path: ", row.path)
         await self.uow.structure.delete_by_query(id=id)
 
-    async def _replace_boss(self, id, new_path):
-        print('replacing')
-        for row in await self.uow.structure.get_by_path_part_any(id):
-            f = '.*'+str(id)
-            new_path = Ltree(re.sub(f, str(new_path), row.path))
-            await self.uow.structure.update_one_by_id(id, path=new_path)
-            print(row)
+    async def _replace_boss(self, pos, path):
+        print("replacing")
+        for row in await self.uow.structure.get_by_path_part_any(f"*.{pos.id}.*"):
+            f = ".*" + str(pos.id)
+            print("old: ", str(row.path), end=" -- ")
+            new_path = Ltree(re.sub(f, str(path), str(row.path)))
+            print("new: ", new_path)
+            await self.uow.structure.update_one_by_id(row.id, path=new_path)
 
     @transaction_mode
     async def update_position(self, id, pos: UpdatePosition):
         original = await self.get_position(id)
+        print(original)
+        # old_boss = original.boss
         if pos.name:
             original.name = pos.name
         if pos.boss_id:
             boss = await self.get_position(pos.boss_id)
             original.boss = boss
-            original.path = Ltree(boss.path+f'{id}')
-            boss.subordinates.append(original)
-            await self._replace_boss(pos.boss_id, f'{boss.path}.{id}')
-        await self.uow.structure.update_one_by_id(id, name=original.name, path=original.path)
+            # old_boss.subordinates.remove(boss)
+            # boss.subordinates.append(original)
+            await self._replace_boss(original, f"{boss.path}.{id}")
+            original.path = Ltree(boss.path + f"{id}")
+        await self.uow.structure.update_one_by_id(
+            id, name=original.name, path=original.path
+        )
         res = await self.get_position(id)
-        return FullPosition.model_validate(res, from_attributes = True)
+        print(res)
+        return FullPosition.model_validate(res, from_attributes=True)
 
     async def _check_structure_exists(self, id) -> None:
         exist = await self.uow.structure.check_exists(id)

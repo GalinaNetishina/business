@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import expression
 from sqlalchemy_utils.types.ltree import LQUERY
@@ -36,12 +36,10 @@ class StructureRepository(SqlAlchemyRepository):
         res = await self.session.execute(query)
         return res.scalars().all()
 
-    async def get_by_path_part_any(self, id):
-        template = f"{id}.*"
+    async def get_by_path_part_any(self, template):
         query = select(self.model).filter(
             self.model.path.lquery(expression.cast(template, LQUERY))
         )
-        print(query)
         res = await self.session.execute(query)
         return res.scalars().all()
 
@@ -53,3 +51,14 @@ class StructureRepository(SqlAlchemyRepository):
         )
         res = await self.session.execute(query)
         return res.scalars().all()
+
+    async def update_one_by_id(self, obj_id, **kwargs):
+        query = (
+            update(self.model)
+            .filter(self.model.id == obj_id)
+            .values(**kwargs)
+            .returning(self.model)
+        )
+        print(query)
+        obj = await self.session.execute(query)
+        return obj.scalar_one_or_none()

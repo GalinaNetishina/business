@@ -20,6 +20,7 @@ LTreeField = Annotated[
     WithJsonSchema({"type": "string", "examples": ["same.path"]}),
 ]
 
+
 class BasePosition(BaseModel):
     id: int
     name: str
@@ -30,6 +31,7 @@ class BasePosition(BaseModel):
 class FullPosition(BasePosition):
     boss: BasePosition | None
     subordinates: list[BasePosition] = Field(default_factory=list)
+
 
 class UpdatePosition(BaseModel):
     name: str | None = None

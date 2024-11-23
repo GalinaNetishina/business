@@ -8,7 +8,6 @@ from src.schemas.user import (
     UserRequest,
     CreateUserResponse,
     UserResponse,
-    UserDB,
     UserUpdateRequest,
 )
 from src.utils.dependencies import get_service_dep
