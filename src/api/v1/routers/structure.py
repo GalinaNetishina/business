@@ -42,8 +42,9 @@ async def get_position(pos_id, service=get_service_dep("structure")) -> PosRespo
 async def update_position(
     pos_id, data: UpdatePosition = Form(...), service=get_service_dep("structure")
 ) -> PosResponse:
-    updated = await service.update_position(pos_id, data)
-    return PosResponse(payload=updated)
+    await service.update_position(pos_id, data)
+    res = await service.get_position(pos_id)
+    return PosResponse(payload=FullPosition.model_validate(res, from_attributes=True))
 
 
 @router.delete(path="/{pos_id:int}", status_code=HTTP_204_NO_CONTENT)

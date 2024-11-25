@@ -59,6 +59,5 @@ class StructureRepository(SqlAlchemyRepository):
             .values(**kwargs)
             .returning(self.model)
         )
-        print(query)
         obj = await self.session.execute(query)
         return obj.scalar_one_or_none()
