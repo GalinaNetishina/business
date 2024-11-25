@@ -14,6 +14,7 @@ class CompanyModel(BaseModel):
     structure: Mapped[list["StructureModel"]] = relationship(
         "StructureModel",
         back_populates="company",
+        order_by='StructureModel.path'
     )
 
     # admin_id: Mapped[UUID | None] = mapped_column(ForeignKey('user.id'))

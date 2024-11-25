@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, UUID4
+from pydantic import BaseModel, Field, UUID4, field_validator
 
 from src.schemas.response import BaseCreateResponse, BaseResponse
 from src.schemas.structure import BasePosition
@@ -29,6 +29,11 @@ class CompanyWithUsers(CompanyDB):
 
 class CompanyWithStructure(CompanyDB):
     structure: list[BasePosition] = Field(default_factory=list)
+
+    @field_validator('structure')
+    @classmethod
+    def structure_ordering(cls, value):
+        return sorted(value, key = lambda x: (len(x.path), x.path))
 
 
 class CompanyShort(CompanyDB):
