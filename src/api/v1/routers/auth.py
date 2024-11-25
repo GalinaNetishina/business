@@ -27,6 +27,7 @@ from src.utils.auth_validation import (
 
 http_bearer = HTTPBearer()
 
+
 router = APIRouter()
 
 
@@ -35,9 +36,7 @@ async def register_user(
     user_data: UserRequest, service: UserService = Depends(UserService)
 ):
     created_user = await service.create_user(user_data)
-    return CreateUserResponse(
-        payload=UserDB.model_validate(created_user, from_attributes=True)
-    )
+    return CreateUserResponse(payload=created_user)
 
 
 @router.post(
@@ -56,4 +55,4 @@ def auth_user_issue_jwt(user: UserSchema = Depends(validate_auth_user)):
 @router.get("/users/me/", status_code=status.HTTP_200_OK)
 async def auth_user_check_self_info(token=Depends(http_bearer)):
     user = await get_current_user_from_token(token)
-    return UserResponse(payload=UserDB.model_validate(user, from_attributes=True))
+    return UserResponse(payload=UserDB.model_validate(user))

@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Annotated
 from uuid import uuid4
+
+from pydantic import ConfigDict
 from sqlalchemy import String, UUID, text, DateTime
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 
@@ -32,3 +34,5 @@ class BaseModel(DeclarativeBase):
             cols.append(f"{col}={getattr(self, col)}")
 
         return f'<{self.__class__.__name__} {", ".join(cols)}>'
+
+    model_config = ConfigDict(from_attributes=True)

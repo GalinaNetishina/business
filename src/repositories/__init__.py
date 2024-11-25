@@ -1,8 +1,8 @@
 __all__ = [
     "CompanyRepository",
     "UserRepository",
-    "StructureRepository",
     "TaskRepository",
+    "StructureRepository",
 ]
 
 from src.repositories.company import CompanyRepository

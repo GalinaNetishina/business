@@ -1,33 +1,56 @@
-from pydantic import BaseModel, Field, UUID4, ConfigDict
+from typing import Annotated
+
+from pydantic import (
+    BaseModel,
+    Field,
+    UUID4,
+    ConfigDict,
+    PlainValidator,
+    PlainSerializer,
+    WithJsonSchema,
+)
 from sqlalchemy_utils import Ltree
 
-from src.schemas.response import BaseCreateResponse
+from src.schemas.response import BaseCreateResponse, BaseResponse
+
+LTreeField = Annotated[
+    Ltree,
+    PlainValidator(lambda v: Ltree(v)),
+    PlainSerializer(lambda v: v.path),
+    WithJsonSchema({"type": "string", "examples": ["same.path"]}),
+]
 
 
-# from src.schemas.user import UserDB
 class BasePosition(BaseModel):
+    id: int
     name: str
-    path: Ltree | None = None
-    # parent: UUID4 | None = None
+    path: LTreeField | None = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
-class Position(BasePosition):
-    prev: BasePosition | None = None
-    next: BasePosition | None = None
+class FullPosition(BasePosition):
+    boss: BasePosition | None
+    subordinates: list[BasePosition] = Field(default_factory=list)
+
+
+class UpdatePosition(BaseModel):
+    name: str | None = None
+    boss_id: int | None = None
+    # subordinates: list[BasePosition] = Field(default_factory=list)
 
 
 class StructureBase(BaseModel):
     company_id: UUID4
-    positions: list[BasePosition]
+    positions: list[FullPosition]
 
 
-class CreatePosPayload(BaseModel):
-    name: str
-    id: UUID4
-    parent: str | None = None
-    children: list[str] = Field(default_factory=list)
+class CreatePosResponse(BaseCreateResponse):
+    payload: BasePosition
 
 
-class PositionResponse(BaseCreateResponse):
-    payload: CreatePosPayload
+class PosResponse(BaseResponse):
+    payload: FullPosition | BasePosition
+
+
+class StructuresResponse(BaseResponse):
+    payload: list[BasePosition]

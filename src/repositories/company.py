@@ -1,5 +1,7 @@
+from typing import Any
+
 from sqlalchemy import Result, select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from src.models import CompanyModel
 from src.utils.repository import SqlAlchemyRepository
@@ -24,7 +26,22 @@ class CompanyRepository(SqlAlchemyRepository):
         res: Result = await self.session.execute(query)
         return res.scalars().all()
 
-    # async def get_by_query_short(self, **kwargs: Any) -> CompanyModel:
-    #     query = select(self.model).filter_by(**kwargs)
-    #     res = await self.session.execute(query)
-    #     return res.scalars().all()
+    async def get_company_with_positions(self, company_id):
+        query = (
+            select(self.model)
+            .where(self.model.id == company_id)
+            .options(joinedload(self.model.structure))
+        )
+        res: Result = await self.session.execute(query)
+        return res.scalar()
+
+    async def get_company_by_query_one_or_none(
+        self, **kwargs: Any
+    ) -> CompanyModel | None:
+        query = (
+            select(self.model)
+            .filter_by(**kwargs)
+            .options(joinedload(self.model.structure))
+        )
+        res: Result = await self.session.execute(query)
+        return res.scalar()

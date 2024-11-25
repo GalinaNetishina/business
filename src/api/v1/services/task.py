@@ -1,8 +1,7 @@
 from starlette.exceptions import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND
 
-from src.models import TaskModel
-from src.schemas.task import TaskRequest, TaskDB
+from src.schemas.task import TaskRequest, TaskDB, TaskUpdateRequest
 
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
@@ -12,13 +11,14 @@ class TaskService(BaseService):
     base_repository: str = "task"
 
     @transaction_mode
-    async def create_task(self, task: TaskRequest) -> TaskModel:
-        return await self.uow.task.add_one_and_get_obj(
+    async def create_task(self, task: TaskRequest) -> TaskDB:
+        res = await self.uow.task.add_one_and_get_obj(
             **task.model_dump(),
         )
+        return TaskDB.model_validate(res, from_attributes=True)
 
     @transaction_mode
-    async def update_task(self, task):
+    async def update_task(self, task: TaskUpdateRequest) -> TaskDB:
         await self._check_task_exists(task.id)
         res = await self.uow.task.update_one_by_id(
             task.id, **task.model_dump(exclude_unset=True)

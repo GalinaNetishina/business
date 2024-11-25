@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
 from src.models import UserModel
-from src.schemas.user import UserRequest, UserUpdateRequest
+from src.schemas.user import UserRequest, UserUpdateRequest, UserDB
 from src.utils.auth import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
@@ -24,40 +24,33 @@ class UserService(BaseService):
         )
 
     @transaction_mode
-    async def get_user_by_id(self, user_id: int) -> UserModel:
+    async def get_user_by_id(self, user_id: int) -> UserDB:
         """Get user by ID."""
-        user: UserModel | None = await self.uow.user.get_by_query_one_or_none(
-            id=user_id
-        )
+        user = await self.uow.user.get_by_query_one_or_none(id=user_id)
         self._check_user_exists(user)
-        return user
+        return UserDB.model_validate(user, from_attributes=True)
 
     # @transaction_mode
     # async def get_user_by_phone(self, phone_number: str) -> UserModel:
     #     """Get user by phone."""
-    #     user: UserModel | None = await self.uow.user.get_by_query_one_or_none(
-    #         phone_number=phone_number
-    #     )
-    #     return user
+    #     user = await self.uow.user.get_by_query_one_or_none(phone_number=phone_number)
+    #     return UserDB.model_validate(user, from_attributes = True)
 
     @transaction_mode
     async def get_user_by_email(self, email: str) -> UserModel:
         """Get user by email."""
-        user: UserModel | None = await self.uow.user.get_by_query_one_or_none(
-            email=email
-        )
-        print(user)
+        user = await self.uow.user.get_by_query_one_or_none(email=email)
         return user
 
     @transaction_mode
-    async def update_user(self, user_id: int, user: UserUpdateRequest) -> UserModel:
+    async def update_user(self, user_id: int, user: UserUpdateRequest) -> UserDB:
         """Update user by ID."""
-        user: UserModel | None = await self.uow.user.update_one_by_id(
+        user = await self.uow.user.update_one_by_id(
             obj_id=user_id,
-            **user.model_dump(exclude=set(["password"]), exclude_unset=True),
+            **user.model_dump(exclude_unset=True),
         )
         self._check_user_exists(user)
-        return user
+        return UserDB.model_validate(user, from_attributes=True)
 
     @transaction_mode
     async def delete_user(self, user_id: int) -> None:

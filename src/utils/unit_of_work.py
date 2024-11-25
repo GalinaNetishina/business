@@ -11,8 +11,8 @@ from src.database.db import async_session_maker
 from src.repositories import (
     CompanyRepository,
     UserRepository,
-    StructureRepository,
     TaskRepository,
+    StructureRepository,
 )
 
 
