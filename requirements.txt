@@ -5,3 +5,4 @@ pydantic-settings
 alembic
 sqlalchemy
 asyncpg
+sqlalchemy_utils
