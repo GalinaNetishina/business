@@ -4,3 +4,5 @@ from src.utils.repository import SqlAlchemyRepository
 
 class TaskRepository(SqlAlchemyRepository):
     model = TaskModel
+
+

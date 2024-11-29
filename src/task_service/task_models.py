@@ -2,7 +2,7 @@ from sqlalchemy import String, Enum, text, JSON
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import BaseModel, uuid_pk, created_at, updated_at
+from src.models.base import BaseModel, uuid_pk, created_at, updated_at
 
 from src.utils.enums import Statuses, Priorities
 

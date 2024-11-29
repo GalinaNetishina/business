@@ -11,4 +11,4 @@ from .company import router as v1_company_router
 from .user import router as v1_user_router
 from .structure import router as v1_structure_router
 from .auth import router as v1_auth_router
-from .task import router as v1_task_router
+from src.task_service.task_routs import router as v1_task_router

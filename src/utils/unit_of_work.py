@@ -11,9 +11,9 @@ from src.database.db import async_session_maker
 from src.repositories import (
     CompanyRepository,
     UserRepository,
-    TaskRepository,
     StructureRepository,
 )
+from src.task_service.task_repo import TaskRepository
 
 
 class AbstractUnitOfWork(ABC):

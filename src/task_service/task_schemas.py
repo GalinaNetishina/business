@@ -3,7 +3,6 @@ from datetime import datetime
 from pydantic import BaseModel, Field, UUID4
 from fastapi_filter.contrib.sqlalchemy import Filter
 from src.schemas.response import BaseCreateResponse, BaseResponse
-from src.schemas.user import UserDB
 from src.utils.enums import Statuses, Priorities
 
 
@@ -32,27 +31,28 @@ class TaskUpdateRequest(BaseModel):
 
 class TaskDB(TaskRequest):
     id: UUID4
-    observer: UserDB | None = None
-    performer: UserDB | None = None
     start_data: datetime
     update_data: datetime
 
+class TaskFull(TaskDB):
+    status: Statuses
+    importance: Priorities
+    tags: list[str]
+
 
 class TaskFilters(Filter):
-    # performer_id: UUID4 | None = None
-    # observer_id: UUID4 | None = None
     status: Statuses = Statuses.CREATED
     importance: Priorities = Priorities.STANDARD
-    # tags: list[str] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
 
 
 class CreateTaskResponse(BaseCreateResponse):
     payload: TaskDB
 
 
-class TaskResponse(BaseResponse):
-    payload: TaskDB
+class TaskDetailResponse(BaseResponse):
+    payload: TaskFull
 
 
 class TaskListResponse(BaseResponse):
-    payload: list[TaskDB]
+    payload: list[TaskFull]
